@@ -1,0 +1,67 @@
+@api = http://localhost:3020/api/v1/prestamos
+
+# Obtener todos los préstamos
+GET {{api}}
+
+###
+POST http://localhost:3020/api/v1/prestamos
+Content-Type: application/json
+
+{
+  "id": 1,
+  "clienteId": 1,
+  "tipo": "semanal",
+  "montoPrestado": 20000,
+  "tasaInteres": 0.1,
+  "montoInteres": 2000,
+  "montoTotal": 22000,
+  "saldoRestante": 22000,
+  "totalPagos": 14,
+  "pagosRealizados": 0,
+  "status": "activo",
+  "fechaInicio": "2025-01-06T00:00:00Z"
+}
+
+###
+POST http://localhost:3020/api/v1/prestamos
+Content-Type: application/json
+
+{
+  "id": 2,
+  "clienteId": 1,
+  "tipo": "mensual",
+  "montoPrestado": 15000,
+  "tasaInteres": 0.1,
+  "montoInteres": 1500,
+  "montoTotal": 16500,
+  "saldoRestante": 16500,
+  "totalPagos": 12,
+  "pagosRealizados": 0,
+  "status": "activo",
+  "fechaInicio": "2025-01-06T00:00:00Z"
+}
+###
+
+POST http://localhost:3020/api/v1/prestamos/1/pagos
+Content-Type: application/json
+
+{
+  "monto": 2000,
+  "fecha": "2025-01-14T00:00:00Z"
+}
+
+
+###
+POST http://localhost:3020/api/v1/prestamos/2/pagos
+Content-Type: application/json
+
+{
+  "monto": 16500,
+  "fecha": "2025-01-14T00:00:00Z"
+}
+
+
+
+
+###
+DELETE http://localhost:3020/api/v1/prestamos/1

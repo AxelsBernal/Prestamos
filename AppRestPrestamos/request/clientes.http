@@ -1,0 +1,17 @@
+@api = http://localhost:3020/api/v1/clientes
+GET {{api}}/1
+###
+DELETE {{api}}/1
+
+###
+POST http://localhost:3020/api/v1/clientes
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nombre": "Axel",
+  "apellidos": "Sandoval Bernal",
+  "telefono": "5551234567",
+  "direccion": "Calle Ejemplo 123",
+  "email": "axel.sandoval@example.com"
+}
