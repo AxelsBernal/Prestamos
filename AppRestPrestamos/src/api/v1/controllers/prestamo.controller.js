@@ -107,19 +107,27 @@ export const addPago = async (req, res) => {
         const nuevoPago = { folio, monto, fecha };
 
         prestamo.pagos.push(nuevoPago);
-        prestamo.saldoRestante -= monto;
         prestamo.pagosRealizados += 1;
 
-        if (prestamo.saldoRestante === 0) {
-            prestamo.status = 'liquidado';
-            prestamo.fechaTermino = new Date();
+        // Actualizar saldo restante solo para préstamos semanales
+        if (prestamo.tipo === 'semanal') {
+            prestamo.saldoRestante -= monto;
 
-            const cliente = await clienteService.findById(prestamo.clienteId);
-            if (cliente) {
-                cliente.historialPrestamos.push(prestamo.id);
-                cliente.prestamosActivos = cliente.prestamosActivos.filter((p) => p !== prestamo.id);
-                await clienteService.update(cliente.id, cliente);
+            if (prestamo.saldoRestante === 0) {
+                prestamo.status = 'liquidado';
+                prestamo.fechaTermino = new Date();
+
+                // Actualizar el historial del cliente
+                const cliente = await clienteService.findById(prestamo.clienteId);
+                if (cliente) {
+                    cliente.historialPrestamos.push(prestamo.id);
+                    cliente.prestamosActivos = cliente.prestamosActivos.filter((p) => p !== prestamo.id);
+                    await clienteService.update(cliente.id, cliente);
+                }
             }
+        } else if (prestamo.tipo === 'mensual') {
+            // No actualizar el saldo restante automáticamente
+            // El saldo solo se cambia al liquidar manualmente el préstamo
         }
 
         const prestamoActualizado = await prestamoService.update(prestamo.id, prestamo);
@@ -133,6 +141,7 @@ export const addPago = async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
 
 export const deletePago = async (req, res) => {
     try {
@@ -238,3 +247,96 @@ export const editPago = async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
+export const getPagosPorCliente = async (req, res) => {
+    try {
+        const clienteId = parseInt(req.params.clienteId, 10);
+
+        // Busca los préstamos del cliente
+        const prestamos = await prestamoService.listAll(); // Lista todos los préstamos
+        const clientePrestamos = prestamos.filter(prestamo => prestamo.clienteId === clienteId);
+
+        // Obtener información detallada de pagos
+        const pagos = clientePrestamos.flatMap(prestamo => 
+            prestamo.pagos.map((pago, index) => ({
+                cliente: `${prestamo.clienteId}`, // Aquí puedes vincular el nombre del cliente si lo tienes en otro servicio
+                prestamo: prestamo.montoPrestado,
+                numeroPago: index + 1,
+                montoPago: pago.monto,
+                fechaPago: pago.fecha
+            }))
+        );
+
+        res.status(200).json(pagos);
+    } catch (error) {
+        console.error("Error en getPagosPorCliente:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+};
+
+export const getLoanSummaryByClienteId = async (req, res) => {
+    const { clienteId } = req.params;
+
+    try {
+        const prestamos = await prestamoService.getLoanSummaryByClienteId(clienteId);
+
+        if (!prestamos || prestamos.length === 0) {
+            return res.status(404).json({ message: "No loans found for the specified client" });
+        }
+
+        const summary = {
+            clienteId,
+            totalPrestamos: prestamos.length,
+            detallesPrestamos: prestamos.map((prestamo) => ({
+                montoPrestado: prestamo.montoPrestado,
+                tipo: prestamo.tipo
+            }))
+        };
+
+        res.status(200).json(summary);
+    } catch (error) {
+        console.error("Error in getLoanSummaryByClienteId:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+import PrestamoService from "../services/prestamo.service.js";
+
+export const obtenerResumenPrestamos = async (req, res) => {
+    try {
+        const prestamos = await PrestamoService.listAll();
+
+        let totalCapital = 0;
+        let totalGanancias = 0;
+        const totalPrestamos = prestamos.length;
+
+        prestamos.forEach(prestamo => {
+            if (prestamo.tipo === "semanal") {
+                prestamo.pagos.forEach(pago => {
+                    if (prestamo.pagosRealizados > 10) {
+                        // A partir del pago número 11 es ganancia
+                        totalGanancias += pago.monto || 0;
+                    } else {
+                        // Antes del pago número 11 es capital
+                        totalCapital += pago.monto || 0;
+                    }
+                });
+            } else if (prestamo.tipo === "mensual") {
+                // Todos los pagos de préstamos mensuales son ganancia
+                prestamo.pagos.forEach(pago => {
+                    totalGanancias += pago.monto || 0;
+                });
+            }
+        });
+
+        res.status(200).json({
+            totalPrestamos,
+            totalCapital,
+            totalGanancias,
+        });
+    } catch (error) {
+        console.error("Error en obtenerResumenPrestamos:", error);
+        res.status(500).json({ error: "Error interno del servidor." });
+    }
+};
+

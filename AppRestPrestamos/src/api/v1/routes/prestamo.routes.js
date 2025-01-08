@@ -12,5 +12,8 @@ router.delete('/:id', prestamoController.deletePrestamo);
 router.post('/:id/pagos', prestamoController.addPago); 
 router.delete('/:id/pagos/:folio', prestamoController.deletePago);
 router.put('/:id/pagos/:folio', prestamoController.editPago);
+router.get('/pagos/cliente/:clienteId', prestamoController.getPagosPorCliente);
+router.get('/summary/cliente/:clienteId', prestamoController.getLoanSummaryByClienteId);
+router.get("/resumen/prestamos", prestamoController.obtenerResumenPrestamos);
 
 export default router;

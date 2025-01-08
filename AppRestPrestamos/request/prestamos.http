@@ -42,11 +42,11 @@ Content-Type: application/json
 }
 ###
 
-POST http://localhost:3020/api/v1/prestamos/1/pagos
+POST http://localhost:3020/api/v1/prestamos/2/pagos
 Content-Type: application/json
 
 {
-  "monto": 2000,
+  "monto": 1500,
   "fecha": "2025-01-14T00:00:00Z"
 }
 
@@ -65,3 +65,13 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3020/api/v1/prestamos/1
+
+###
+GET {{api}}/pagos/cliente/1
+###
+GET http://localhost:3020/api/v1/prestamos/pagos/cliente/1
+###
+GET http://localhost:3020/api/v1/prestamos/summary/cliente/1
+###
+# Obtener el resumen de los préstamos (capital y ganancia)
+GET {{api}}/resumen/prestamos
