@@ -71,7 +71,7 @@ GET {{api}}/pagos/cliente/1
 ###
 GET http://localhost:3020/api/v1/prestamos/pagos/cliente/1
 ###
-GET http://localhost:3020/api/v1/prestamos/summary/cliente/1
+GET http://localhost:3020/api/v1/resumen/prestamos
 ###
 # Obtener el resumen de los préstamos (capital y ganancia)
 GET {{api}}/resumen/prestamos
