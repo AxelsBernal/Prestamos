@@ -26,7 +26,18 @@ export const getClienteById = async (req, res) => {
 
 export const createCliente = async (req, res) => {
     try {
-        const cliente = await clienteService.create(req.body);
+        // Generar un ID único para el cliente basado en la longitud de clientes actuales
+        const clientesExistentes = await clienteService.listAll();
+        const nuevoId = clientesExistentes.length > 0 
+            ? Math.max(...clientesExistentes.map(cliente => cliente.id)) + 1 
+            : 1;
+
+        const nuevoCliente = {
+            id: nuevoId,
+            ...req.body,
+        };
+
+        const cliente = await clienteService.create(nuevoCliente);
         res.status(201).json(cliente);
     } catch (error) {
         console.error('Error en createCliente:', error);

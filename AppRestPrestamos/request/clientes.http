@@ -1,5 +1,5 @@
 @api = http://localhost:3020/api/v1/clientes
-GET {{api}}/1
+GET {{api}}/2
 ###
 DELETE {{api}}/1
 
@@ -8,7 +8,6 @@ POST http://localhost:3020/api/v1/clientes
 Content-Type: application/json
 
 {
-  "id": 1,
   "nombre": "Axel",
   "apellidos": "Sandoval Bernal",
   "telefono": "5551234567",

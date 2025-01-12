@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
+import { AlertaCorrecto, AlertaIncorrecto } from "../styled/Notifications"; // Make sure these are defined
+import "../modals/css/AddClientModal.css";
 
 export default function AddClientModal({ open, onClose, onAdd }) {
   const [formData, setFormData] = useState({
@@ -10,22 +12,40 @@ export default function AddClientModal({ open, onClose, onAdd }) {
     email: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key].trim()) newErrors[key] = true;
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [e.target.name]: false });
   };
 
   const handleSubmit = () => {
-    onAdd(formData);
-    setFormData({
-      nombre: "",
-      apellidos: "",
-      telefono: "",
-      direccion: "",
-      email: "",
-    });
+    if (validateForm()) {
+      onAdd(formData);
+      AlertaCorrecto("Cliente agregado correctamente.");
+      setFormData({
+        nombre: "",
+        apellidos: "",
+        telefono: "",
+        direccion: "",
+        email: "",
+      });
+      onClose();
+    } else {
+      AlertaIncorrecto("Por favor, complete todos los campos obligatorios.");
+    }
   };
 
   return (
@@ -33,46 +53,19 @@ export default function AddClientModal({ open, onClose, onAdd }) {
       <Box className="modal-box">
         <h2>Agregar Cliente</h2>
         <form>
-          <TextField
-            name="nombre"
-            label="Nombre"
-            fullWidth
-            margin="normal"
-            value={formData.nombre}
-            onChange={handleChange}
-          />
-          <TextField
-            name="apellidos"
-            label="Apellidos"
-            fullWidth
-            margin="normal"
-            value={formData.apellidos}
-            onChange={handleChange}
-          />
-          <TextField
-            name="telefono"
-            label="Teléfono"
-            fullWidth
-            margin="normal"
-            value={formData.telefono}
-            onChange={handleChange}
-          />
-          <TextField
-            name="direccion"
-            label="Dirección"
-            fullWidth
-            margin="normal"
-            value={formData.direccion}
-            onChange={handleChange}
-          />
-          <TextField
-            name="email"
-            label="Email"
-            fullWidth
-            margin="normal"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          {["nombre", "apellidos", "telefono", "direccion", "email"].map((field) => (
+            <TextField
+              key={field}
+              name={field}
+              label={field.charAt(0).toUpperCase() + field.slice(1)}
+              fullWidth
+              margin="normal"
+              value={formData[field]}
+              onChange={handleChange}
+              error={errors[field]}
+              helperText={errors[field] && "Campo obligatorio"}
+            />
+          ))}
           <div className="modal-actions">
             <Button onClick={onClose} color="error">
               Cancelar

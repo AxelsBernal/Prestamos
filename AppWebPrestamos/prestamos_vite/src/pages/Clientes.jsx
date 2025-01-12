@@ -64,11 +64,17 @@ export default function Clientes() {
       setClientes([...clientes, response.data]);
       setFilteredClients([...clientes, response.data]);
       setIsAddModalOpen(false);
+      toast.success("Cliente agregado correctamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     } catch (error) {
       console.error("Error al agregar cliente:", error);
+      toast.error("Error al agregar el cliente. Por favor, inténtalo nuevamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     }
   };
-
+  
   const handleEditClient = async (updatedClient) => {
     try {
       await axios.put(`${import.meta.env.VITE_REST_API_CLIENTES}/${updatedClient.id}`, updatedClient);
@@ -78,11 +84,17 @@ export default function Clientes() {
       setClientes(updatedClientes);
       setFilteredClients(updatedClientes);
       setIsEditModalOpen(false);
+      toast.success("Cliente editado correctamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     } catch (error) {
       console.error("Error al editar cliente:", error);
+      toast.error("Error al editar el cliente. Por favor, inténtalo nuevamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     }
   };
-
+  
   const handleDeleteClient = async (clientId) => {
     try {
       await axios.delete(`${import.meta.env.VITE_REST_API_CLIENTES}/${clientId}`);
@@ -90,11 +102,16 @@ export default function Clientes() {
       setClientes(updatedClientes);
       setFilteredClients(updatedClientes);
       setIsDeleteModalOpen(false);
+      toast.success("Cliente eliminado correctamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     } catch (error) {
       console.error("Error al eliminar cliente:", error);
+      toast.error("Error al eliminar el cliente. Por favor, inténtalo nuevamente.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     }
   };
-
   const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
@@ -173,6 +190,8 @@ export default function Clientes() {
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Teléfono</TableCell>
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Dirección</TableCell>
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Email</TableCell>
+              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Préstamos Activos</TableCell>
+              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Historial de Préstamos</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -193,6 +212,8 @@ export default function Clientes() {
                     <TableCell>{cliente.telefono}</TableCell>
                     <TableCell>{cliente.direccion}</TableCell>
                     <TableCell>{cliente.email}</TableCell>
+                    <TableCell>{cliente.prestamosActivos.length}</TableCell>
+                    <TableCell>{cliente.historialPrestamos.length}</TableCell>
                   </TableRow>
                 ))}
           </TableBody>
@@ -207,23 +228,25 @@ export default function Clientes() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
-      <AddClientModal
+     
+     <AddClientModal
         open={isAddModalOpen}
         onClose={handleCloseAddModal}
-        onAddClient={handleAddClient}
+        onAdd={handleAddClient} // Cambia esto para que sea consistente con el nombre esperado en AddClientModal
+        client={selectedClient}
       />
       <EditClientModal
         open={isEditModalOpen}
         onClose={handleCloseEditModal}
-        onEditClient={handleEditClient}
         client={selectedClient}
+        onEdit={handleEditClient}
       />
-      <DeleteClientModal
-        open={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onDeleteClient={handleDeleteClient}
-        client={selectedClient}
-      />
+     <DeleteClientModal
+  open={isDeleteModalOpen}
+  onClose={handleCloseDeleteModal}
+  client={selectedClient} // Pass the full selected client object
+  onDelete={handleDeleteClient}
+/>
     </>
   );
 }
