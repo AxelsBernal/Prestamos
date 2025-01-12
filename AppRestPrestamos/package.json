@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "scripts": {
+  "scripts": {
     "babel-node": "babel-node",
     "dev": "nodemon --exec npm run babel-node -- src/index.js",
     "build": "babel src --out-dir dist",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@babel/runtime": "^7.26.0",
     "@hapi/boom": "^10.0.1",
+    "@mui/x-data-grid": "^7.23.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./inicio.css";
+import "../css/inicio.css";
 import {
   BarChart,
   Bar,
@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 export default function Inicio() {
-  document.title = "CdP - Inicio";
+  document.title = "Inicio";
 
   const [prestamosTotales, setPrestamosTotales] = useState(0);
   const [capital, setCapital] = useState(0);
