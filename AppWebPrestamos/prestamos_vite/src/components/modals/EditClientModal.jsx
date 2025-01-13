@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./css/AddClientModal.css"; // Reutilizamos el CSS para mantener consistencia
+import "./css/DisenoModal.css"; // Reutilizamos el CSS para mantener consistencia
 
 export default function EditClientModal({ open, onClose, client, onEdit }) {
   const [formData, setFormData] = useState(client || {});

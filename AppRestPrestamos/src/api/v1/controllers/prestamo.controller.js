@@ -3,13 +3,28 @@ import clienteService from '../services/cliente.service ';
 
 export const getAllPrestamos = async (req, res) => {
     try {
+        // Obtener todos los préstamos
         const prestamos = await prestamoService.listAll();
-        res.status(200).json(prestamos);
+
+        // Obtener los nombres de los clientes asociados a los préstamos
+        const prestamosConClientes = await Promise.all(
+            prestamos.map(async (prestamo) => {
+                const cliente = await clienteService.findById(prestamo.clienteId);
+                return {
+                    ...prestamo._doc,
+                    nombreCliente: cliente ? cliente.nombre : "No encontrado",
+                    apellidosCliente: cliente ? cliente.apellidos : "No encontrado",
+                };
+            })
+        );
+
+        res.status(200).json(prestamosConClientes);
     } catch (error) {
         console.error('Error en getAllPrestamos:', error);
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
 
 export const getPrestamoById = async (req, res) => {
     try {

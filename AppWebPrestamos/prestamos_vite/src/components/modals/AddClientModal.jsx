@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
 import { AlertaCorrecto, AlertaIncorrecto } from "../styled/Notifications"; // Make sure these are defined
-import "../modals/css/AddClientModal.css";
+import "../modals/css/DisenoModal.css";
 
 export default function AddClientModal({ open, onClose, onAdd }) {
   const [formData, setFormData] = useState({
