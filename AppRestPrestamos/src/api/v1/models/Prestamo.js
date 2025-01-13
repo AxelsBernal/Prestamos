@@ -14,8 +14,8 @@ const prestamoSchema = new mongoose.Schema({
     tasaInteres: { type: Number, required: true },
     montoInteres: { type: Number, required: true },
     montoTotal: { type: Number, required: true },
-    saldoRestante: { type: Number, required: true },
-    totalPagos: { type: Number, required: true },
+    saldoRestante: { type: Number, required: false },
+    totalPagos: { type: Number, required: false },
     pagosRealizados: { type: Number, required: true, default: 0 },
     pagos: [pagoSchema], // Subdocumento para pagos
     fechaInicio: { type: Date, default: Date.now },

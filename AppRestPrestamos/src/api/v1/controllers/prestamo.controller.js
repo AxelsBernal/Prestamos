@@ -42,14 +42,55 @@ export const getPrestamoById = async (req, res) => {
 
 export const createPrestamo = async (req, res) => {
     try {
-        const { clienteId } = req.body;
+        const { clienteId, tipo, montoPrestado, tasaInteres, fechaInicio } = req.body;
 
+        // Validate clienteId
         const cliente = await clienteService.findById(Number(clienteId));
         if (!cliente) {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
 
-        const prestamo = await prestamoService.create(req.body);
+        // Autoincrement ID
+        const lastPrestamo = await prestamoService.listAll();
+        const newId = lastPrestamo.length > 0 ? Math.max(...lastPrestamo.map(p => p.id)) + 1 : 1;
+
+        // Calculate fields based on tipo
+        let montoInteres = 0;
+        let montoTotal = 0;
+        let saldoRestante = 0;
+        let totalPagos = 0;
+
+        if (tipo === 'semanal') {
+            // For "semanal", calculate based on payments
+            montoInteres = montoPrestado * tasaInteres;
+            totalPagos = req.body.totalPagos || 0; // Ensure totalPagos is provided in the request
+            montoTotal = montoInteres * totalPagos;
+            saldoRestante = montoTotal;
+        } else if (tipo === 'mensual') {
+            // For "mensual", montoInteres is just a percentage of the montoPrestado
+            montoInteres = montoPrestado * tasaInteres;
+            montoTotal = 0;
+            saldoRestante = 0;
+        }
+
+        // Create Prestamo
+        const prestamoData = {
+            id: newId,
+            clienteId,
+            tipo,
+            montoPrestado,
+            tasaInteres,
+            montoInteres,
+            montoTotal,
+            saldoRestante,
+            totalPagos: tipo === 'semanal' ? totalPagos : undefined, // Only set for semanal
+            fechaInicio,
+            status: req.body.status || 'activo',
+        };
+
+        const prestamo = await prestamoService.create(prestamoData);
+
+        // Update cliente
         cliente.prestamosActivos.push(prestamo.id);
         await clienteService.update(cliente.id, cliente);
 
@@ -59,6 +100,12 @@ export const createPrestamo = async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
+
+
+
+
+  
 
 export const updatePrestamo = async (req, res) => {
     try {

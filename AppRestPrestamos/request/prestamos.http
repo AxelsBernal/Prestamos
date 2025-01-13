@@ -27,10 +27,9 @@ POST http://localhost:3020/api/v1/prestamos
 Content-Type: application/json
 
 {
-  "id": 2,
   "clienteId": 1,
   "tipo": "mensual",
-  "montoPrestado": 15000,
+  "montoPrestado": 150000,
   "tasaInteres": 0.1,
   "montoInteres": 1500,
   "montoTotal": 16500,
@@ -64,7 +63,7 @@ Content-Type: application/json
 
 
 ###
-DELETE http://localhost:3020/api/v1/prestamos/1
+DELETE http://localhost:3020/api/v1/prestamos/3
 
 ###
 GET {{api}}/pagos/cliente/1
@@ -77,3 +76,4 @@ GET {{api}}/pagos/prestamo/1
 GET {{api}}/resumen/prestamos
 ###
 GET http://localhost:3020/api/v1/prestamos/pagos/cliente/1/prestamo/1
+GET http://localhost:3020/api/v1/prestamos/prestamos/pagos/cliente/1/prestamo/1
