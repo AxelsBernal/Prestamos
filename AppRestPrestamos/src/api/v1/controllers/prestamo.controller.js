@@ -355,3 +355,86 @@ export const obtenerResumenPrestamos = async (req, res) => {
     }
 };
 
+export const getPagosPorPrestamo = async (req, res) => {
+    try {
+        const prestamoId = parseInt(req.params.prestamoId, 10); // Asegúrate de que prestamoId sea un número
+        console.log("Buscando préstamo con ID:", prestamoId);
+
+        // Busca el préstamo por ID
+        const prestamo = await prestamoService.findById(prestamoId);
+
+        if (!prestamo) {
+            return res.status(404).json({ message: "Préstamo no encontrado" });
+        }
+
+        console.log("Préstamo encontrado:", prestamo);
+
+        // Obtén los pagos del préstamo
+        const pagos = prestamo.pagos.map((pago, index) => ({
+            numeroPago: index + 1,
+            montoPago: pago.monto,
+            fechaPago: pago.fecha,
+        }));
+
+        console.log("Pagos del préstamo:", pagos);
+
+        res.status(200).json(pagos);
+    } catch (error) {
+        console.error("Error en getPagosPorPrestamo:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+};
+
+
+export const getPagosPorClienteYPrestamo = async (req, res) => {
+    try {
+        const clienteId = parseInt(req.params.clienteId, 10);
+        const prestamoId = parseInt(req.params.prestamoId, 10);
+
+        console.log(`Buscando pagos para clienteId: ${clienteId}, prestamoId: ${prestamoId}`);
+
+        // Busca el préstamo específico del cliente
+        const prestamo = await prestamoService.findById(prestamoId);
+
+        if (!prestamo) {
+            return res.status(404).json({ message: "Préstamo no encontrado" });
+        }
+
+        // Validar que el préstamo pertenece al cliente
+        if (prestamo.clienteId !== clienteId) {
+            return res.status(400).json({ message: "El préstamo no pertenece al cliente especificado" });
+        }
+
+        // Buscar información del cliente
+        const cliente = await clienteService.findById(clienteId);
+
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado" });
+        }
+
+        // Formatear la respuesta con la información del préstamo y los pagos
+        const resultado = {
+            idPrestamo: prestamo.id,
+            idCliente: prestamo.clienteId,
+            nombreCliente: `${cliente.nombre} ${cliente.apellidos}`, // Combinar nombre y apellidos del cliente
+            montoPrestado: prestamo.montoPrestado,
+            montoTotal: prestamo.montoTotal,
+            saldoRestante: prestamo.saldoRestante,
+            fechaInicio: new Date(prestamo.fechaInicio).toLocaleDateString("es-MX"),
+            pagos: prestamo.pagos.map((pago, index) => ({
+                numeroPago: index + 1,
+                montoPago: pago.monto,
+                fechaPago: new Date(pago.fecha).toLocaleDateString("es-MX"),
+            })),
+        };
+
+        console.log("Resultado para cliente y préstamo:", resultado);
+
+        res.status(200).json(resultado);
+    } catch (error) {
+        console.error("Error en getPagosPorClienteYPrestamo:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+};
+
+

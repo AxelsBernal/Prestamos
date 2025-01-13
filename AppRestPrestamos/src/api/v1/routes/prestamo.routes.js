@@ -15,5 +15,7 @@ router.put('/:id/pagos/:folio', prestamoController.editPago);
 router.get('/pagos/cliente/:clienteId', prestamoController.getPagosPorCliente);
 router.get('/summary/cliente/:clienteId', prestamoController.getLoanSummaryByClienteId);
 router.get("/resumen/prestamos", prestamoController.obtenerResumenPrestamos);
+router.get('/pagos/prestamo/:prestamoId', prestamoController.getPagosPorPrestamo);
+router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', prestamoController.getPagosPorClienteYPrestamo);
 
 export default router;
