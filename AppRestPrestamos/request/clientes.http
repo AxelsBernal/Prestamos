@@ -1,5 +1,5 @@
 @api = http://localhost:3020/api/v1/clientes
-GET {{api}}/2
+GET {{api}}
 ###
 DELETE {{api}}/1
 

@@ -6,9 +6,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import PaymentIcon from "@mui/icons-material/Payment";
 import "../css/Prestamo.css";
 import AddLoanModal from "../components/modals/AddLoanModal";
 import DeleteLoanModal from "../components/modals/DeleteLoanModal";
+import EditLoanModal from "../components/modals/EditLoanModal";
+import AddPaymentModal from "../components/modals/AddPaymentModal";
 
 export default function Prestamos() {
   const [prestamos, setPrestamos] = useState([]);
@@ -17,6 +21,9 @@ export default function Prestamos() {
   const [showPagos, setShowPagos] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+  
 
   // Fetch all loans
   const fetchPrestamos = async () => {
@@ -48,45 +55,49 @@ export default function Prestamos() {
     }
   };
 
-  // View loan details with payments
-  const handleViewWithPayments = async () => {
-    if (selectedRow) {
-      const { clienteId, id } = selectedRow;
+  const [currentLoanId, setCurrentLoanId] = useState(null); // Add state for current loan ID
 
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_REST_API_PRESTAMOS}/pagos/cliente/${clienteId}/prestamo/${id}`
-        );
-        console.log("Respuesta de la API:", response.data);
+const handleViewWithPayments = async () => {
+  if (selectedRow) {
+    const { clienteId, id } = selectedRow;
+    console.log("Current Loan ID:", id);
 
-        const pagosData = response.data;
 
-        if (pagosData && pagosData.pagos && Array.isArray(pagosData.pagos)) {
-          const pagosFormatted = pagosData.pagos.map((pago, index) => ({
-            id: `${id}-${index + 1}`,
-            idPrestamo: pagosData.idPrestamo,
-            idCliente: pagosData.idCliente,
-            nombreCliente: pagosData.nombreCliente,
-            montoPrestado: pagosData.montoPrestado,
-            montoTotal: pagosData.montoTotal,
-            saldoRestante: pagosData.saldoRestante,
-            fechaInicio: pagosData.fechaInicio,
-            numeroPago: pago.numeroPago,
-            montoPago: pago.montoPago,
-            fechaPago: pago.fechaPago,
-          }));
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_REST_API_PRESTAMOS}/pagos/cliente/${clienteId}/prestamo/${id}`
+        
+      );
+      console.log("Current Loan ID:", id);
+      const pagosData = response.data;
 
-          setPagos(pagosFormatted);
-          setShowPagos(true);
-        } else {
-          console.error("Datos de pagos no disponibles o inválidos:", pagosData);
-          alert("No se encontraron pagos para este préstamo.");
-        }
-      } catch (error) {
-        console.error("Error al obtener los detalles del préstamo:", error);
+      if (pagosData && pagosData.pagos && Array.isArray(pagosData.pagos)) {
+        const pagosFormatted = pagosData.pagos.map((pago, index) => ({
+          id: `${id}-${index + 1}`,
+          idPrestamo: pagosData.idPrestamo,
+          idCliente: pagosData.idCliente,
+          nombreCliente: pagosData.nombreCliente,
+          montoPrestado: pagosData.montoPrestado,
+          montoTotal: pagosData.montoTotal,
+          saldoRestante: pagosData.saldoRestante,
+          fechaInicio: pagosData.fechaInicio,
+          numeroPago: pago.numeroPago,
+          montoPago: pago.montoPago,
+          fechaPago: pago.fechaPago,
+        }));
+
+        setPagos(pagosFormatted);
+        setShowPagos(true);
+        setCurrentLoanId(id); // Save the loan ID for adding payments
+      } else {
+        console.error("Datos de pagos no disponibles o inválidos:", pagosData);
+        alert("No se encontraron pagos para este préstamo.");
       }
+    } catch (error) {
+      console.error("Error al obtener los detalles del préstamo:", error);
     }
-  };
+  }
+};
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -94,16 +105,33 @@ export default function Prestamos() {
   const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
   const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
 
-  // Refresh loans when modal is closed after adding a loan
+  const handleOpenEditModal = () => setIsEditModalOpen(true);
+  const handleCloseEditModal = () => setIsEditModalOpen(false);
+
+  const handleOpenAddPaymentModal = () => setIsAddPaymentModalOpen(true);
+  const handleCloseAddPaymentModal = () => setIsAddPaymentModalOpen(false);
+
+  // Refresh loans when modal is closed after adding/editing a loan
   const handleLoanAdded = () => {
     fetchPrestamos();
     setIsModalOpen(false);
+  };
+
+  const handleLoanEdited = () => {
+    fetchPrestamos();
+    setIsEditModalOpen(false);
   };
 
   // Refresh loans when a loan is deleted
   const handleLoanDeleted = () => {
     fetchPrestamos();
     setIsDeleteModalOpen(false);
+  };
+
+  // Refresh payments when a payment is added
+  const handlePaymentAdded = () => {
+    handleViewWithPayments();
+    setIsAddPaymentModalOpen(false);
   };
 
   useEffect(() => {
@@ -147,16 +175,30 @@ export default function Prestamos() {
               <RefreshIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Agregar Préstamo">
-            <IconButton onClick={handleOpenModal} color="success">
-              <AddCircleIcon />
-            </IconButton>
-          </Tooltip>
-          {selectedRow && (
+          {!showPagos && (
+            <Tooltip title="Agregar Préstamo">
+              <IconButton onClick={handleOpenModal} color="success">
+                <AddCircleIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {showPagos && (
+            <Tooltip title="Agregar Pago">
+              <IconButton onClick={handleOpenAddPaymentModal} color="success">
+                <PaymentIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {selectedRow && !showPagos && (
             <>
               <Tooltip title="Ver con Pagos">
                 <IconButton onClick={handleViewWithPayments} color="info">
                   <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Editar Préstamo">
+                <IconButton onClick={handleOpenEditModal} color="warning">
+                  <EditIcon />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Eliminar Préstamo">
@@ -189,6 +231,20 @@ export default function Prestamos() {
           selectedLoan={selectedRow}
           onLoanDeleted={handleLoanDeleted}
         />
+        <EditLoanModal
+          open={isEditModalOpen}
+          onClose={handleCloseEditModal}
+          selectedLoan={selectedRow}
+          onLoanEdited={handleLoanEdited}
+        />
+        {showPagos && (
+          <AddPaymentModal
+          open={isAddPaymentModalOpen}
+          onClose={handleCloseAddPaymentModal}
+          loanId={currentLoanId} // Pass the current loan ID
+          onPaymentAdded={handlePaymentAdded}
+          />
+        )}
       </Box>
     </div>
   );

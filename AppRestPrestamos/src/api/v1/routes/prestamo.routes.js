@@ -17,5 +17,7 @@ router.get('/summary/cliente/:clienteId', prestamoController.getLoanSummaryByCli
 router.get("/resumen/prestamos", prestamoController.obtenerResumenPrestamos);
 router.get('/pagos/prestamo/:prestamoId', prestamoController.getPagosPorPrestamo);
 router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', prestamoController.getPagosPorClienteYPrestamo);
+router.get('/pagos/All', prestamoController.getAllPagos);
+
 
 export default router;

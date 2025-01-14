@@ -484,4 +484,29 @@ export const getPagosPorClienteYPrestamo = async (req, res) => {
     }
 };
 
+export const getAllPagos = async (req, res) => {
+    try {
+        // Fetch all loans
+        const prestamos = await prestamoService.listAll();
+
+        // Fetch payments from all loans
+        const allPagos = await Promise.all(
+            prestamos.flatMap(async (prestamo) => {
+                const cliente = await clienteService.findById(prestamo.clienteId);
+                return prestamo.pagos.map((pago) => ({
+                    nombreCliente: cliente ? `${cliente.nombre} ${cliente.apellidos}` : "No encontrado",
+                    montoPrestado: prestamo.montoPrestado,
+                    folio: pago.folio,
+                    monto: pago.monto,
+                    fecha: pago.fecha,
+                }));
+            })
+        );
+
+        res.status(200).json(allPagos.flat());
+    } catch (error) {
+        console.error("Error in getAllPagos:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+};
 

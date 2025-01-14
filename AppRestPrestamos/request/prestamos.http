@@ -1,7 +1,7 @@
 @api = http://localhost:3020/api/v1/prestamos
 
 # Obtener todos los préstamos
-GET {{api}}
+GET {{api}}/pagos/All
 
 ###
 POST http://localhost:3020/api/v1/prestamos
@@ -63,7 +63,7 @@ Content-Type: application/json
 
 
 ###
-DELETE http://localhost:3020/api/v1/prestamos/3
+DELETE http://localhost:3020/api/v1/prestamos/5
 
 ###
 GET {{api}}/pagos/cliente/1
