@@ -130,9 +130,9 @@ export default function Clientes() {
 
   return (
     <>
-      <h2 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
+      <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
         Listado de Clientes
-      </h2>
+      </h1>
       <div style={{ display: "flex", justifyContent: "space-between", margin: "0 5% 10px" }}>
         <TextField
           variant="outlined"

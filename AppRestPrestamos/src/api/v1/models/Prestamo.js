@@ -9,6 +9,7 @@ const pagoSchema = new mongoose.Schema({
 const prestamoSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true },
     clienteId: { type: Number, required: true },
+    usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true }, // Relación con el usuario
     tipo: { type: String, required: true },
     montoPrestado: { type: Number, required: true },
     tasaInteres: { type: Number, required: true },
@@ -24,3 +25,4 @@ const prestamoSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('Prestamo', prestamoSchema, 'prestamos');
+

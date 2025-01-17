@@ -3,6 +3,7 @@ import Sidebar from './components/sidebar/SideBar';
 import Inicio from './pages/Inicio';
 import Clientes from "./pages/Clientes";
 import Prestamos from './pages/prestamos';
+import Pagos from './pages/pagos'
 import { useState } from 'react';
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
           {activeView === 'Inicio' && <Inicio />}
           {activeView === "Clientes" && <Clientes />}
           {activeView === "Prestamos" && <Prestamos />}
+          {activeView === "Pagos" && <Pagos />}
         </div>
       </div>
       <Footer />

@@ -1,0 +1,30 @@
+.pagos-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .tabla-pagos {
+    height: 400px;
+    width: 100%;
+    margin: 20px auto;
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 8px; /* Opcional: Bordes redondeados */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Opcional: Sombra */
+  }
+  
+  .green-header {
+    background-color: #4caf50; /* Verde */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .MuiButton-containedSuccess {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .MuiButton-containedSuccess:hover {
+    background-color: #45a049;
+  }
+  

@@ -41,9 +41,9 @@ export default function Prestamos() {
           tasaInteres: prestamo.tasaInteres
             ? `${(prestamo.tasaInteres * 100).toFixed(1)}%`
             : "NA",
-          fechaInicio: prestamo.fechaInicio
-            ? new Date(prestamo.fechaInicio).toLocaleDateString("es-MX")
-            : "NA",
+            fechaInicio: prestamo.fechaInicio
+            ? new Date(prestamo.fechaInicio).toISOString().split("T")[0]
+            : "NA",          
           nombreCliente: nombreCompleto,
         };
       });
@@ -167,7 +167,9 @@ const handleViewWithPayments = async () => {
 
   return (
     <div className="prestamos-container">
-      <h1>Listado de Préstamos</h1>
+      <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
+        Listado de Prestamos
+      </h1>
       <Box>
         <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
           <Tooltip title="Refrescar">

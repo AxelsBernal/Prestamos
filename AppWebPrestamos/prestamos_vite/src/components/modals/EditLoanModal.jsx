@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Modal, Box, Typography, TextField, Button, MenuItem } from "@mui/material";
 import axios from "axios";
 
 const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
@@ -21,6 +15,7 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
     totalPagos: "",
     pagosRealizados: "",
     fechaInicio: "",
+    status: "", // Add status field
   });
 
   useEffect(() => {
@@ -41,9 +36,10 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
             montoInteres: loanData.montoInteres,
             montoTotal: loanData.montoTotal,
             saldoRestante: loanData.saldoRestante,
-            totalPagos: loanData.totalPagos,
+            totalPagos: loanData.totalPagos || "",
             pagosRealizados: loanData.pagosRealizados,
             fechaInicio: loanData.fechaInicio.split("T")[0], // Format date
+            status: loanData.status, // Set the current status
           });
         } catch (error) {
           console.error("Error al obtener los detalles del préstamo:", error);
@@ -73,9 +69,12 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
         montoInteres: formValues.montoInteres,
         montoTotal: formValues.montoTotal,
         saldoRestante: formValues.saldoRestante,
-        totalPagos: formValues.totalPagos,
+        ...(formValues.tipo === "semanal" && {
+          totalPagos: formValues.totalPagos,
+        }),
         pagosRealizados: formValues.pagosRealizados,
         fechaInicio: formValues.fechaInicio,
+        status: formValues.status, // Include status in payload
       };
 
       await axios.put(
@@ -187,16 +186,18 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
             required
             sx={{ mb: 2 }}
           />
-          <TextField
-            label="Total de Pagos"
-            name="totalPagos"
-            type="number"
-            value={formValues.totalPagos}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
+          {formValues.tipo === "semanal" && (
+            <TextField
+              label="Total de Pagos"
+              name="totalPagos"
+              type="number"
+              value={formValues.totalPagos}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+          )}
           <TextField
             label="Pagos Realizados"
             name="pagosRealizados"
@@ -218,6 +219,19 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
+          <TextField
+            label="Estado"
+            name="status"
+            select
+            value={formValues.status}
+            onChange={handleInputChange}
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+          >
+            <MenuItem value="activo">Activo</MenuItem>
+            <MenuItem value="liquidado">Liquidado</MenuItem>
+          </TextField>
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Actualizar Préstamo
           </Button>

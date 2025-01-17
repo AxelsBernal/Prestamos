@@ -1,7 +1,7 @@
 @api = http://localhost:3020/api/v1/prestamos
 
 # Obtener todos los préstamos
-GET {{api}}/pagos/All
+GET {{api}}
 
 ###
 POST http://localhost:3020/api/v1/prestamos

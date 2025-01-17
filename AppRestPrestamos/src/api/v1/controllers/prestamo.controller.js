@@ -368,26 +368,39 @@ export const obtenerResumenPrestamos = async (req, res) => {
     try {
         const prestamos = await PrestamoService.listAll();
 
-        let totalCapital = 0;
-        let totalGanancias = 0;
-        const totalPrestamos = prestamos.length;
+        let totalCapital = 0; // Suma del capital pendiente
+        let totalGanancias = 0; // Suma de las ganancias totales
+        const totalPrestamos = prestamos.length; // Total de préstamos registrados
 
         prestamos.forEach(prestamo => {
+            // Si el préstamo es semanal
             if (prestamo.tipo === "semanal") {
-                prestamo.pagos.forEach(pago => {
-                    if (prestamo.pagosRealizados > 10) {
-                        // A partir del pago número 11 es ganancia
-                        totalGanancias += pago.monto || 0;
+                // Solo los primeros 10 pagos son capital
+                const pagosCapital = Math.min(prestamo.totalPagos, 10); // Máximo 10 pagos a capital
+
+                prestamo.pagos.forEach((pago, index) => {
+                    if (index + 1 <= pagosCapital) {
+                        // Los primeros 10 pagos se descuentan del capital
+                        totalCapital -= pago.monto;
                     } else {
-                        // Antes del pago número 11 es capital
-                        totalCapital += pago.monto || 0;
+                        // A partir del pago 11 son ganancias
+                        totalGanancias += pago.monto;
                     }
                 });
+
+                // Agregamos el monto inicial del préstamo al capital total
+                totalCapital += prestamo.montoPrestado;
+
             } else if (prestamo.tipo === "mensual") {
-                // Todos los pagos de préstamos mensuales son ganancia
+                // Todos los pagos de préstamos mensuales son ganancias
                 prestamo.pagos.forEach(pago => {
-                    totalGanancias += pago.monto || 0;
+                    totalGanancias += pago.monto;
                 });
+
+                // Si el préstamo no está liquidado, aún se suma el monto inicial al capital total
+                if (prestamo.status !== "liquidado") {
+                    totalCapital += prestamo.montoPrestado;
+                }
             }
         });
 
@@ -401,6 +414,8 @@ export const obtenerResumenPrestamos = async (req, res) => {
         res.status(500).json({ error: "Error interno del servidor." });
     }
 };
+
+
 
 export const getPagosPorPrestamo = async (req, res) => {
     try {
@@ -494,6 +509,7 @@ export const getAllPagos = async (req, res) => {
             prestamos.flatMap(async (prestamo) => {
                 const cliente = await clienteService.findById(prestamo.clienteId);
                 return prestamo.pagos.map((pago) => ({
+                    prestamoId: prestamo.id,
                     nombreCliente: cliente ? `${cliente.nombre} ${cliente.apellidos}` : "No encontrado",
                     montoPrestado: prestamo.montoPrestado,
                     folio: pago.folio,
@@ -509,4 +525,5 @@ export const getAllPagos = async (req, res) => {
         res.status(500).json({ message: "Error interno del servidor" });
     }
 };
+
 

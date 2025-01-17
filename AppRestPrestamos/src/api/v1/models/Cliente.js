@@ -9,7 +9,9 @@ const clienteSchema = new mongoose.Schema({
     email: { type: String, required: true },
     prestamosActivos: [{ type: Number }], // Cambiado de ObjectId a Number
     historialPrestamos: [{ type: Number }], // Cambiado de ObjectId a Number
-    fechaRegistro: { type: Date, default: Date.now }
+    fechaRegistro: { type: Date, default: Date.now },
+    usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true } // Relación con el usuario
 });
 
 export default mongoose.model('Cliente', clienteSchema, 'clientes');
+
