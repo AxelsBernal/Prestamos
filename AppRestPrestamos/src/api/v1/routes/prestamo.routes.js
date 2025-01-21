@@ -19,9 +19,9 @@ router.put('/:id/pagos/:folio', authMiddleware, prestamoController.editPago);  /
 
 router.get('/pagos/cliente/:clienteId', authMiddleware, prestamoController.getPagosPorCliente); //Obtener pagos por Cliente
 router.get('/summary/cliente/:clienteId', authMiddleware, prestamoController.getLoanSummaryByClienteId); // Obtener un resumen de los préstamos asociados a un cliente específico
-router.get('/resumen/prestamos', authMiddleware, prestamoController.obtenerResumenPrestamos);
-router.get('/pagos/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorPrestamo);
-router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorClienteYPrestamo);
-router.get('/pagos/All', authMiddleware, prestamoController.getAllPagos);
+router.get('/resumen/prestamos', authMiddleware, prestamoController.obtenerResumenPrestamos); //Resumenes de los prestamos 
+router.get('/pagos/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorPrestamo);  // Obtener pagos de un prestamo especifico 
+router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorClienteYPrestamo); // Obtener pagos de un prestamo y cliente 
+router.get('d', authMiddleware, prestamoController.getAllPagos);
 
 export default router;
