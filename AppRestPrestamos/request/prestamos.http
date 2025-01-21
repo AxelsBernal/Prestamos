@@ -2,68 +2,94 @@
 
 # Obtener todos los préstamos
 GET {{api}}
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 ###
-POST http://localhost:3020/api/v1/prestamos
+GET {{api}}/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc###
+###
+# Crear un préstamo
+POST {{api}}
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 
 {
-  "id": 1,
-  "clienteId": 1,
-  "tipo": "semanal",
-  "montoPrestado": 20000,
-  "tasaInteres": 0.1,
-  "montoInteres": 2000,
-  "montoTotal": 22000,
-  "saldoRestante": 22000,
-  "totalPagos": 14,
-  "pagosRealizados": 0,
-  "status": "activo",
-  "fechaInicio": "2025-01-06T00:00:00Z"
-}
-
-###
-POST http://localhost:3020/api/v1/prestamos
-Content-Type: application/json
-
-{
-  "clienteId": 1,
+  "clienteId": 2,
   "tipo": "mensual",
-  "montoPrestado": 150000,
+  "montoPrestado": 30000,
   "tasaInteres": 0.1,
-  "montoInteres": 1500,
-  "montoTotal": 16500,
-  "saldoRestante": 16500,
-  "totalPagos": 12,
-  "pagosRealizados": 0,
-  "status": "activo",
-  "fechaInicio": "2025-01-06T00:00:00Z"
+  "totalPagos": 0,
+  "fechaInicio": "2025-01-06T00:00:00Z",
+  "status": "activo"
 }
-###
 
-POST http://localhost:3020/api/v1/prestamos/2/pagos
+
+###
+# Modificar un prestamo
+PUT  {{api}}/2
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ3NTQ5NSwiZXhwIjoxNzM3NDc5MDk1fQ.-GaEa_LwlhMWx3zbV1R2Fr_DlpBPf2wrRiWdl7EcDvY
 
 {
-  "monto": 1500,
+  "tasaInteres": 0.3
+}
+###
+#Eliminar un presatmo 
+DELETE  {{api}}/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ3NTQ5NSwiZXhwIjoxNzM3NDc5MDk1fQ.-GaEa_LwlhMWx3zbV1R2Fr_DlpBPf2wrRiWdl7EcDvY
+###
+
+#Agregar un Pago
+POST http://localhost:3020/api/v1/prestamos/6/pagos
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+
+{
+  "monto": 3000,
+  "fecha": "2025-01-14T00:00:00Z"
+}
+###
+#Eliminar un pago
+DELETE http://localhost:3020/api/v1/prestamos/2/pagos/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+
+###
+#Editar Pago
+PUT  http://localhost:3020/api/v1/prestamos/2/pagos/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+
+{
+  "monto": 0,
   "fecha": "2025-01-14T00:00:00Z"
 }
 
+###
+#Obtener pago por cliente
+GET {{api}}/pagos/cliente/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 
 ###
-POST http://localhost:3020/api/v1/prestamos/2/pagos
-Content-Type: application/json
-
-{
-  "monto": 16500,
-  "fecha": "2025-01-14T00:00:00Z"
-}
-
-
-
-
+# Ver cliente y sus prestamos 
+GET {{api}}/summary/cliente/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 ###
-DELETE http://localhost:3020/api/v1/prestamos/5
+# Resumenes de los prestamos 
+GET {{api}}/resumen/prestamos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+###
+# Pagos por prestamo
+GET {{api}}/resumen/prestamos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+
+
+
+
+
+
+
+
+
+
 
 ###
 GET {{api}}/pagos/cliente/1

@@ -1,0 +1,29 @@
+@api = http://localhost:3020/api/v1/users
+
+### Registrar un nuevo usuario
+POST {{api}}/register
+Content-Type: application/json
+
+{
+  "nombre": "Axel",
+  "apellidos": "Sandoval Bernal",
+  "email": "AxsandovalBe@ittepic.edu.mx",
+  "password": "sABA020401HNENRXA3."
+}
+
+###
+
+### Iniciar sesión con el usuario registrado
+POST {{api}}/login
+Content-Type: application/json
+
+{
+  "email": "AxsandovalBe@ittepic.edu.mx",
+  "password": "sABA020401HNENRXA3."
+}
+
+###
+
+### Obtener información del usuario actual
+GET {{api}}/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ0MTUxNCwiZXhwIjoxNzM3NDQ1MTE0fQ.onR9v494U0wWXDr4BbxesCthm0xsulzraOGygVA_NMk

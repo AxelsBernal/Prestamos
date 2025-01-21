@@ -1,16 +1,31 @@
 @api = http://localhost:3020/api/v1/clientes
-GET {{api}}
-###
-DELETE {{api}}/1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQzNzgyNywiZXhwIjoxNzM3NDQxNDI3fQ.uZa6p0v2CpJ8M64ENs2j7qaO5P_AknzIb-JWCz3jyu4
+GET {{api}}/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQzNzgyNywiZXhwIjoxNzM3NDQxNDI3fQ.uZa6p0v2CpJ8M64ENs2j7qaO5P_AknzIb-JWCz3jyu4
 
+### Eliminar un cliente
+DELETE {{api}}/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQzNzgyNywiZXhwIjoxNzM3NDQxNDI3fQ.uZa6p0v2CpJ8M64ENs2j7qaO5P_AknzIb-JWCz3jyu4
 ###
 POST http://localhost:3020/api/v1/clientes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQzNzgyNywiZXhwIjoxNzM3NDQxNDI3fQ.uZa6p0v2CpJ8M64ENs2j7qaO5P_AknzIb-JWCz3jyu4
 Content-Type: application/json
 
 {
-  "nombre": "Axel",
-  "apellidos": "Sandoval Bernal",
-  "telefono": "5551234567",
-  "direccion": "Calle Ejemplo 123",
-  "email": "axel.sandoval@example.com"
+  "nombre": "Maria Guadalupe",
+  "apellidos": "Bernal Gonzalez",
+  "email": "Lupita@gmail.com",
+  "telefono": "3111120517",
+  "direccion": "Leonides Sibajas 100",
+  "curp": "SABA020401HNENRXA3."
 }
+###
+### Actualizar cliente
+PUT {{api}}/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQzNzgyNywiZXhwIjoxNzM3NDQxNDI3fQ.uZa6p0v2CpJ8M64ENs2j7qaO5P_AknzIb-JWCz3jyu4
+Content-Type: application/json
+
+{
+    "telefono": "1234567890"
+}
+

@@ -1,34 +1,39 @@
 import Cliente from '../models/Cliente';
 
 class ClienteService {
-    // Listar todos los clientes
-    async listAll() {
-        return await Cliente.find().populate('prestamosActivos').populate('historialPrestamos');
+    // Obtener el último cliente registrado para generar el próximo ID
+    async getLastCliente() {
+        return await Cliente.findOne().sort({ id: -1 }).exec(); // Ordena por ID descendente y toma el primero
     }
 
-    // Buscar cliente por ID (campo personalizado)
-    async findById(id) {
-        return await Cliente.findOne({ id }).populate('prestamosActivos').populate('historialPrestamos');
+    // Listar todos los clientes de un usuario específico
+    async listAllByUserId(userId) {
+        return await Cliente.find({ usuarioId: userId }).populate('prestamosActivos').populate('historialPrestamos');
     }
 
-    // Crear un nuevo cliente
+    // Buscar cliente por ID (campo personalizado) y usuario específico
+    async findById(id, userId) {
+        return await Cliente.findOne({ id, usuarioId: userId }).populate('prestamosActivos').populate('historialPrestamos');
+    }
+
+    // Crear un nuevo cliente asociado a un usuario
     async create(data) {
         const cliente = new Cliente(data);
         return await cliente.save();
     }
 
-    // Actualizar un cliente por su ID
-    async update(id, data) {
-        return await Cliente.findOneAndUpdate({ id }, data, { new: true });
-    }
-
-    // Eliminar un cliente por su ID
-    async delete(id) {
-        return await Cliente.findOneAndDelete({ id });
+    // Actualizar un cliente por su ID y usuario
+    async update(id, userId, data) {
+        return await Cliente.findOneAndUpdate({ id, usuarioId: userId }, data, { new: true });
     }
     
-    async findByPrestamoId(prestamoId) {
-        return await Cliente.findOne({ prestamosActivos: prestamoId });
+
+    // Eliminar un cliente por su ID y usuario
+    async delete(id, userId) {
+        console.log('Buscando cliente con id:', id, 'y usuarioId:', userId);
+        const cliente = await Cliente.findOneAndDelete({ id, usuarioId: userId });
+        console.log('Cliente encontrado para eliminar:', cliente);
+        return cliente;
     }
     
 }

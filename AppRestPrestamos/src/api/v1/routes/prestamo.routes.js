@@ -1,23 +1,27 @@
 import { Router } from 'express';
 import * as prestamoController from '../controllers/prestamo.controller';
-
+import { authMiddleware } from "../middlewares/auth.middleware.js"; // Importar el middleware
 
 const router = Router();
+/************************************ PRESTAMOS ***************************************************** */
+router.get('/', authMiddleware, prestamoController.getAllPrestamos);  //Obtener todos los prestamis
+router.get('/:id', authMiddleware, prestamoController.getPrestamoById);  //Obtener prestamo por id
+router.post('/', authMiddleware, prestamoController.createPrestamo); //agregar un prestamo 
+router.put('/:id', authMiddleware, prestamoController.updatePrestamo); // Modificar un prestamo  
+router.delete('/:id', authMiddleware, prestamoController.deletePrestamo); // Eliminar un prestamo 
+/** ************************************************************************************************* */
 
-router.get('/', prestamoController.getAllPrestamos);
-router.get('/:id', prestamoController.getPrestamoById);
-router.post('/', prestamoController.createPrestamo);
-router.put('/:id', prestamoController.updatePrestamo);
-router.delete('/:id', prestamoController.deletePrestamo);
-router.post('/:id/pagos', prestamoController.addPago); 
-router.delete('/:id/pagos/:folio', prestamoController.deletePago);
-router.put('/:id/pagos/:folio', prestamoController.editPago);
-router.get('/pagos/cliente/:clienteId', prestamoController.getPagosPorCliente);
-router.get('/summary/cliente/:clienteId', prestamoController.getLoanSummaryByClienteId);
-router.get("/resumen/prestamos", prestamoController.obtenerResumenPrestamos);
-router.get('/pagos/prestamo/:prestamoId', prestamoController.getPagosPorPrestamo);
-router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', prestamoController.getPagosPorClienteYPrestamo);
-router.get('/pagos/All', prestamoController.getAllPagos);
+/************************************** PRINCIPALES DE PAGO ********************************************* */
+router.post('/:id/pagos', authMiddleware, prestamoController.addPago); // Agregar un pago a un prestamo
+router.delete('/:id/pagos/:folio', authMiddleware, prestamoController.deletePago); // Eliminar Pago
+router.put('/:id/pagos/:folio', authMiddleware, prestamoController.editPago);  // Modificar Pago
+/** ************************************************************************************************* */
 
+router.get('/pagos/cliente/:clienteId', authMiddleware, prestamoController.getPagosPorCliente); //Obtener pagos por Cliente
+router.get('/summary/cliente/:clienteId', authMiddleware, prestamoController.getLoanSummaryByClienteId); // Obtener un resumen de los préstamos asociados a un cliente específico
+router.get('/resumen/prestamos', authMiddleware, prestamoController.obtenerResumenPrestamos);
+router.get('/pagos/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorPrestamo);
+router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorClienteYPrestamo);
+router.get('/pagos/All', authMiddleware, prestamoController.getAllPagos);
 
 export default router;
