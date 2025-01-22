@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tooltip } from "@mui/material";
 
 // Importar íconos de React Icons con colores personalizados
@@ -10,7 +11,8 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 import "./Sidebar.css";
 
-export default function Sidebar({ onSwitchView }) {
+export default function Sidebar() {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(() => {
     const storedState = localStorage.getItem("sidebarVisible");
     return storedState === "true";
@@ -48,6 +50,10 @@ export default function Sidebar({ onSwitchView }) {
     }
   }, [isVisible]);
 
+  const navigateTo = (path) => {
+    navigate(path);
+  };
+
   return (
     <>
       <Tooltip title="Ocultar/Mostrar" placement="right">
@@ -74,7 +80,7 @@ export default function Sidebar({ onSwitchView }) {
         <ul>
           <Tooltip title="Inicio" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Inicio")}>
+              <a onClick={() => navigateTo("/")}>
                 Inicio
                 <span style={{ marginLeft: "120px", color: "#4CAF50" }}>
                   <FaHome />
@@ -84,7 +90,7 @@ export default function Sidebar({ onSwitchView }) {
           </Tooltip>
           <Tooltip title="Clientes" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Clientes")}>
+              <a onClick={() => navigateTo("/clientes")}>
                 Clientes
                 <span style={{ marginLeft: "105px", color: "#2196F3" }}>
                   <MdPeopleAlt />
@@ -94,7 +100,7 @@ export default function Sidebar({ onSwitchView }) {
           </Tooltip>
           <Tooltip title="Préstamos" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Prestamos")}>
+              <a onClick={() => navigateTo("/prestamos")}>
                 Préstamos
                 <span style={{ marginLeft: "90px", color: "#FFC107" }}>
                   <MdOutlineRequestQuote />
@@ -104,7 +110,7 @@ export default function Sidebar({ onSwitchView }) {
           </Tooltip>
           <Tooltip title="Pagos" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Pagos")}>
+              <a onClick={() => navigateTo("/pagos")}>
                 Pagos
                 <span style={{ marginLeft: "120px", color: "#FF5722" }}>
                   <RiBillLine />
@@ -114,7 +120,7 @@ export default function Sidebar({ onSwitchView }) {
           </Tooltip>
           <Tooltip title="Cuenta" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Cuenta")}>
+              <a onClick={() => navigateTo("/cuenta")}>
                 Cuenta
                 <span style={{ marginLeft: "110px", color: "#3F51B5" }}>
                   <MdAccountCircle />
@@ -124,7 +130,7 @@ export default function Sidebar({ onSwitchView }) {
           </Tooltip>
           <Tooltip title="Salir" placement="right">
             <li>
-              <a onClick={() => onSwitchView("Salir")}>
+              <a onClick={() => navigateTo("/login")}>
                 Salir
                 <span style={{ marginLeft: "130px", color: "#F44336" }}>
                   <FaSignOutAlt />

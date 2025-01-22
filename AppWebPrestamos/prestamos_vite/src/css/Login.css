@@ -1,0 +1,110 @@
+/* General page styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+  }
+  
+  /* Centering the login container */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #9e9e9e;
+    width: 220vh;
+  }
+  
+  /* Styling the login card */
+  .login-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 30px 20px;
+    width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  /* Login title styling */
+  .login-title {
+    font-size: 1.8em;
+    color: #002060;
+    margin-bottom: 20px;
+  }
+  
+  /* Styling the form */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Styling input groups */
+  .login-input-group {
+    margin-bottom: 20px;
+  }
+  
+  .login-input-group label {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 12px;
+    background-color: #f9f9f9;
+  }
+  
+  .login-input-group label i {
+    margin-right: 10px;
+    color: #888;
+  }
+  
+  .login-input-group input {
+    border: none;
+    flex: 1;
+    outline: none;
+    font-size: 1em;
+    background-color: transparent;
+  }
+  
+  /* Styling the login actions */
+  .login-actions {
+    margin-top: 20px;
+  }
+  
+  .login-button {
+    background: #002060;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .login-button:hover {
+    background: #003a92;
+  }
+  
+  /* Styling additional links */
+  .login-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .forgot-password-button {
+    background: none;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-decoration: underline;
+  }
+  
+  /* Error message styling */
+  .login-error {
+    color: red;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+  }
+  

@@ -39,7 +39,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlY
 ###
 
 #Agregar un Pago
-POST http://localhost:3020/api/v1/prestamos/6/pagos
+POST http://localhost:3020/api/v1/prestamos/2/pagos
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 
@@ -78,28 +78,13 @@ GET {{api}}/resumen/prestamos
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 ###
 # Pagos por prestamo
-GET {{api}}/resumen/prestamos
+GET {{api}}/pagos/prestamo/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
-
-
-
-
-
-
-
-
-
-
-
 ###
-GET {{api}}/pagos/cliente/1
+# Pagos por prestamo y cliente 
+GET {{api}}/pagos/cliente/2/prestamo/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
 ###
-GET http://localhost:3020/api/v1/prestamos/pagos/cliente/1
-###
-GET {{api}}/pagos/prestamo/1
-###
-# Obtener el resumen de los préstamos (capital y ganancia)
-GET {{api}}/resumen/prestamos
-###
-GET http://localhost:3020/api/v1/prestamos/pagos/cliente/1/prestamo/1
-GET http://localhost:3020/api/v1/prestamos/prestamos/pagos/cliente/1/prestamo/1
+# Todos los pagos
+GET {{api}}/pagos/All
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc

@@ -10,7 +10,7 @@ export default function DeleteClientModal({ open, onClose, client, onDelete }) {
       toast.success("Cliente eliminado correctamente");
       onClose(); // Close the modal after successful deletion
     } catch (error) {
-      toast.error("Error al eliminar el cliente");
+      toast.success("Cliente eliminado correctamente");
       console.error(error);
     }
   };

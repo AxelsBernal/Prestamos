@@ -21,6 +21,7 @@ import AddClientModal from "../components/modals/AddClientModal";
 import EditClientModal from "../components/modals/EditClientModal";
 import DeleteClientModal from "../components/modals/DeleteClientModal";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Clientes() {
   const [clientes, setClientes] = useState([]);
@@ -33,15 +34,25 @@ export default function Clientes() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Fetch data from API
+  const token = localStorage.getItem("token");
+
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REST_API_CLIENTES}`);
+        const response = await axios.get(`${import.meta.env.VITE_REST_API_CLIENTES}`, axiosConfig);
         setClientes(response.data);
         setFilteredClients(response.data);
       } catch (error) {
         console.error("Error al obtener los clientes:", error);
+        toast.error("Error al cargar los clientes. Por favor, inténtalo nuevamente.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -60,7 +71,7 @@ export default function Clientes() {
 
   const handleAddClient = async (newClient) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REST_API_CLIENTES}`, newClient);
+      const response = await axios.post(`${import.meta.env.VITE_REST_API_CLIENTES}`, newClient, axiosConfig);
       setClientes([...clientes, response.data]);
       setFilteredClients([...clientes, response.data]);
       setIsAddModalOpen(false);
@@ -74,10 +85,10 @@ export default function Clientes() {
       });
     }
   };
-  
+
   const handleEditClient = async (updatedClient) => {
     try {
-      await axios.put(`${import.meta.env.VITE_REST_API_CLIENTES}/${updatedClient.id}`, updatedClient);
+      await axios.put(`${import.meta.env.VITE_REST_API_CLIENTES}/${updatedClient.id}`, updatedClient, axiosConfig);
       const updatedClientes = clientes.map((cliente) =>
         cliente.id === updatedClient.id ? updatedClient : cliente
       );
@@ -94,10 +105,10 @@ export default function Clientes() {
       });
     }
   };
-  
+
   const handleDeleteClient = async (clientId) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_REST_API_CLIENTES}/${clientId}`);
+      await axios.delete(`${import.meta.env.VITE_REST_API_CLIENTES}/${clientId}`, axiosConfig);
       const updatedClientes = clientes.filter((cliente) => cliente.id !== clientId);
       setClientes(updatedClientes);
       setFilteredClients(updatedClientes);
@@ -112,6 +123,7 @@ export default function Clientes() {
       });
     }
   };
+
   const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
@@ -119,20 +131,9 @@ export default function Clientes() {
     setPage(0);
   };
 
-  const handleOpenAddModal = () => setIsAddModalOpen(true);
-  const handleCloseAddModal = () => setIsAddModalOpen(false);
-
-  const handleOpenEditModal = () => setIsEditModalOpen(true);
-  const handleCloseEditModal = () => setIsEditModalOpen(false);
-
-  const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
-  const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
-
   return (
     <>
-      <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
-        Listado de Clientes
-      </h1>
+      <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>Listado de Clientes</h1>
       <div style={{ display: "flex", justifyContent: "space-between", margin: "0 5% 10px" }}>
         <TextField
           variant="outlined"
@@ -144,42 +145,16 @@ export default function Clientes() {
           }}
           style={{ width: "60%" }}
         />
-        <div>
-          <Tooltip title="Agregar Cliente">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddCircleIcon />}
-              onClick={handleOpenAddModal}
-              style={{ marginRight: "10px" }}
-            >
-              Agregar
-            </Button>
-          </Tooltip>
-          <Tooltip title="Editar Cliente">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<EditIcon />}
-              onClick={handleOpenEditModal}
-              disabled={!selectedClient}
-              style={{ marginRight: "10px" }}
-            >
-              Editar
-            </Button>
-          </Tooltip>
-          <Tooltip title="Eliminar Cliente">
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={handleOpenDeleteModal}
-              disabled={!selectedClient}
-            >
-              Eliminar
-            </Button>
-          </Tooltip>
-        </div>
+        <Tooltip title="Agregar Cliente">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleIcon />}
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Agregar
+          </Button>
+        </Tooltip>
       </div>
       <TableContainer component={Paper}>
         <Table>
@@ -188,65 +163,74 @@ export default function Clientes() {
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>ID</TableCell>
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Nombre</TableCell>
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Teléfono</TableCell>
-              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Dirección</TableCell>
               <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Email</TableCell>
-              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Préstamos Activos</TableCell>
-              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Historial de Préstamos</TableCell>
+              <TableCell style={{ fontWeight: "bold", color: "#fff" }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredClients &&
-              filteredClients
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((cliente) => (
-                  <TableRow
-                    key={cliente.id}
-                    onClick={() => setSelectedClient(cliente)}
-                    style={{
-                      backgroundColor: selectedClient?.id === cliente.id ? "#f5f5f5" : "inherit",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell>{cliente.id}</TableCell>
-                    <TableCell>{`${cliente.nombre} ${cliente.apellidos}`}</TableCell>
-                    <TableCell>{cliente.telefono}</TableCell>
-                    <TableCell>{cliente.direccion}</TableCell>
-                    <TableCell>{cliente.email}</TableCell>
-                    <TableCell>{cliente.prestamosActivos.length}</TableCell>
-                    <TableCell>{cliente.historialPrestamos.length}</TableCell>
-                  </TableRow>
-                ))}
+            {filteredClients
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((cliente) => (
+                <TableRow key={cliente.id}>
+                  <TableCell>{cliente.id}</TableCell>
+                  <TableCell>{`${cliente.nombre} ${cliente.apellidos}`}</TableCell>
+                  <TableCell>{cliente.telefono}</TableCell>
+                  <TableCell>{cliente.email}</TableCell>
+                  <TableCell>
+                    <Tooltip title="Editar">
+                      <IconButton
+                        color="primary"
+                        onClick={() => {
+                          setSelectedClient(cliente);
+                          setIsEditModalOpen(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Eliminar">
+                      <IconButton
+                        color="secondary"
+                        onClick={() => {
+                          setSelectedClient(cliente);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={filteredClients?.length || 0}
+          count={filteredClients.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
-     
-     <AddClientModal
+      <AddClientModal
         open={isAddModalOpen}
-        onClose={handleCloseAddModal}
-        onAdd={handleAddClient} // Cambia esto para que sea consistente con el nombre esperado en AddClientModal
-        client={selectedClient}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={handleAddClient}
       />
       <EditClientModal
         open={isEditModalOpen}
-        onClose={handleCloseEditModal}
+        onClose={() => setIsEditModalOpen(false)}
         client={selectedClient}
         onEdit={handleEditClient}
       />
-     <DeleteClientModal
-  open={isDeleteModalOpen}
-  onClose={handleCloseDeleteModal}
-  client={selectedClient} // Pass the full selected client object
-  onDelete={handleDeleteClient}
-/>
+      <DeleteClientModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        client={selectedClient}
+        onDelete={() => handleDeleteClient(selectedClient.id)}
+      />
     </>
   );
 }

@@ -20,22 +20,40 @@ export default function Inicio() {
   useEffect(() => {
     const fetchResumen = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // Redirigir si no hay token
+          window.location.href = "/login";
+          return;
+        }
+  
         const response = await axios.get(
-          `${import.meta.env.VITE_REST_API_PRESTAMOS}/resumen/prestamos`
+          `${import.meta.env.VITE_REST_API_PRESTAMOS}/resumen/prestamos`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-
+  
         const { totalPrestamos, totalCapital, totalGanancias } = response.data;
-
+  
         setPrestamosTotales(totalPrestamos);
         setCapital(totalCapital);
         setGanancias(totalGanancias);
       } catch (error) {
         console.error("Error al obtener los datos del resumen:", error);
+        // Opcional: Redirigir si el token es inválido
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
       }
     };
-
+  
     fetchResumen();
   }, []);
+  
 
   // Datos para el gráfico
   const chartData = [
