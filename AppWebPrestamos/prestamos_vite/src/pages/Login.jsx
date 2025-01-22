@@ -1,59 +1,51 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import '../css/Login.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "../css/login.css";
 
-export default function Login() {
+const Login = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
     try {
-      // Llama a la API para autenticar al usuario
-      const response = await fetch(`${import.meta.env.VITE_REST_API_AUTH}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Guarda el usuario en el contexto de autenticación
-        login({ token: data.token, user: data.user });
-      } else {
-        setError(data.message || 'Credenciales incorrectas');
-      }
+      const response = await axios.post(
+        `${import.meta.env.VITE_REST_API_AUTH}/login`,
+        credentials
+      );
+      login(response.data);
+      console.log("Inicio de sesión exitoso, redirigiendo a /inicio");
+      navigate("/");
     } catch (err) {
-      setError('Error al conectarse con el servidor');
-      console.error('Error en handleSubmit:', err);
-    } finally {
-      setLoading(false);
+      console.error("Error en el inicio de sesión:", err);
+      setError("Credenciales incorrectas. Intenta de nuevo.");
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 className="login-title">Inicio de sesión</h2>
+        <h2 className="login-title">Inicio de Sesión</h2>
         <form className="login-form" onSubmit={handleSubmit}>
-          {error && <div className="login-error">{error}</div>}
+          {error && <p className="login-error">{error}</p>}
           <div className="login-input-group">
             <label>
               <i className="fas fa-user"></i>
               <input
                 type="email"
-                placeholder="Correo"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                placeholder="Correo Electrónico"
+                value={credentials.email}
+                onChange={handleChange}
                 required
               />
             </label>
@@ -63,23 +55,23 @@ export default function Login() {
               <i className="fas fa-lock"></i>
               <input
                 type="password"
+                name="password"
                 placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={credentials.password}
+                onChange={handleChange}
                 required
               />
             </label>
           </div>
           <div className="login-actions">
-            <button className="login-button" type="submit" disabled={loading}>
-              {loading ? 'Ingresando...' : 'Ingresar'}
+            <button className="login-button" type="submit">
+              Iniciar Sesión
             </button>
-          </div>
-          <div className="login-links">
-            <button className="forgot-password-button">¿Olvidaste tu contraseña?</button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
