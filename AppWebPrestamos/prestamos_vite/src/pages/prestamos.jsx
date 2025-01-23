@@ -24,6 +24,8 @@ export default function Prestamos() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
   const [currentLoanId, setCurrentLoanId] = useState(null);
+  const [selectedLoanId, setSelectedLoanId] = useState(null);
+
 
   // Función para obtener el token
   const getToken = () => localStorage.getItem("token");
@@ -45,23 +47,26 @@ export default function Prestamos() {
       sortable: false,
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
-          <Tooltip title="Agregar Pago">
-            <IconButton onClick={() => handleOpenAddPaymentModal(params.row)}>
+                    <Tooltip title="Agregar Pago">
+            <IconButton
+              onClick={() => handleOpenAddPaymentModal(params.row)}
+              color="primary"
+            >
               <PaymentIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Ver Pagos">
-            <IconButton onClick={() => handleViewWithPayments(params.row)}>
+            <IconButton onClick={() => handleViewWithPayments(params.row)} color="primary">
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Editar Préstamo">
-            <IconButton onClick={() => handleOpenEditModal(params.row)}>
+            <IconButton onClick={() => handleOpenEditModal(params.row)} color="primary">
               <EditIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Eliminar Préstamo">
-            <IconButton onClick={() => handleOpenDeleteModal(params.row)}>
+            <IconButton onClick={() => handleOpenDeleteModal(params.row)} color="error">
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -111,8 +116,14 @@ export default function Prestamos() {
 
   // Abrir modal de agregar pago
   const handleOpenAddPaymentModal = (loan) => {
-    setSelectedRow(loan);
+    //console.log("Préstamo seleccionado:", loan); // Verifica si el préstamo se pasa correctamente
+    setSelectedLoanId(loan.id); // Cambia `loan.id` si tu campo ID tiene otro nombre
     setIsAddPaymentModalOpen(true);
+  };
+  
+  const handleCloseAddPaymentModal = () => {
+    setSelectedLoanId(null);
+    setIsAddPaymentModalOpen(false);
   };
 
   // Abrir modal de editar préstamo
@@ -176,12 +187,12 @@ export default function Prestamos() {
       <Box sx={{ marginBottom: 2 }}>
         <Stack direction="row" spacing={2}>
           <Tooltip title="Agregar Préstamo">
-            <IconButton onClick={() => setIsModalOpen(true)}>
+            <IconButton onClick={() => setIsModalOpen(true)} color="primary">
               <AddCircleIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Refrescar">
-            <IconButton onClick={fetchPrestamos}>
+            <IconButton onClick={fetchPrestamos} color="primary">
               <RefreshIcon />
             </IconButton>
           </Tooltip>
@@ -225,8 +236,9 @@ export default function Prestamos() {
       />;
       <AddPaymentModal
         open={isAddPaymentModalOpen}
-        onClose={() => setIsAddPaymentModalOpen(false)}
-        onLoanAdd={fetchPrestamos}
+        onClose={handleCloseAddPaymentModal}
+        loanId={selectedLoanId} // Aquí se pasa el ID del préstamo
+        onPaymentAdded={() => fetchPrestamos()} // Refresca los datos después de agregar el pago
       />
     </div>
   );

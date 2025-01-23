@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -6,6 +6,7 @@ import {
   TextField,
   Button,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 
@@ -15,6 +16,18 @@ const AddPaymentModal = ({ open, onClose, loanId, onPaymentAdded }) => {
     fecha: "",
   });
   const [message, setMessage] = useState({ text: "", type: "" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      // Limpiar campos al cerrar el modal
+      setFormValues({
+        monto: "",
+        fecha: "",
+      });
+      setMessage({ text: "", type: "" });
+    }
+  }, [open]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -26,20 +39,29 @@ const AddPaymentModal = ({ open, onClose, loanId, onPaymentAdded }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Current Loan ID: en modal: ", loanId);
+    if (!loanId) {
+      console.error("No se encontró loanId");
+      setMessage({ text: "Error: No se encontró el ID del préstamo.", type: "error" });
+      return;
+    }
+
+    setIsLoading(true);
+    console.log("ID del préstamo:", loanId); // Para verificar que el ID llega correctamente
+
     try {
       const payload = {
         monto: parseFloat(formValues.monto),
         fecha: formValues.fecha,
       };
-  
+
       await axios.post(
-        `${import.meta.env.VITE_REST_API_PRESTAMOS}/${loanId}/pagos`, // Use loanId
-        payload
+        `${import.meta.env.VITE_REST_API_PRESTAMOS}/${loanId}/pagos`,
+        payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       setMessage({ text: "Pago agregado correctamente", type: "success" });
       onPaymentAdded && onPaymentAdded();
-  
+
       setTimeout(() => {
         setMessage({ text: "", type: "" });
         onClose();
@@ -47,9 +69,10 @@ const AddPaymentModal = ({ open, onClose, loanId, onPaymentAdded }) => {
     } catch (error) {
       console.error("Error al agregar el pago:", error);
       setMessage({ text: "Error al agregar el pago", type: "error" });
+    } finally {
+      setIsLoading(false);
     }
   };
-  
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="add-payment-modal">
@@ -96,8 +119,14 @@ const AddPaymentModal = ({ open, onClose, loanId, onPaymentAdded }) => {
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Agregar Pago
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={isLoading}
+          >
+            {isLoading ? <CircularProgress size={24} /> : "Agregar Pago"}
           </Button>
         </form>
       </Box>

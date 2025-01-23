@@ -5,6 +5,8 @@ import {
   Typography,
   TextField,
   Button,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 
@@ -13,41 +15,60 @@ const EditPaymentModal = ({ open, onClose, selectedPayment, onPaymentUpdated }) 
     monto: "",
     fecha: "",
   });
+  const [message, setMessage] = useState({ text: "", type: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (selectedPayment) {
-      const fecha = selectedPayment.fecha ? new Date(selectedPayment.fecha) : null;
-
       setFormValues({
         monto: selectedPayment.monto || "",
-        fecha: fecha && !isNaN(fecha) ? fecha.toISOString().split("T")[0] : "", // Validate date
+        fecha: selectedPayment.fecha || "",
       });
     }
   }, [selectedPayment]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!selectedPayment) {
+      console.error("No payment selected for editing.");
+      setMessage({ text: "Error: No se encontró el pago para editar.", type: "error" });
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const payload = {
-        monto: Number(formValues.monto),
+        monto: parseFloat(formValues.monto),
         fecha: formValues.fecha,
       };
 
       await axios.put(
         `${import.meta.env.VITE_REST_API_PRESTAMOS}/${selectedPayment.prestamoId}/pagos/${selectedPayment.folio}`,
-        payload
+        payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
+      setMessage({ text: "Pago actualizado correctamente.", type: "success" });
       onPaymentUpdated && onPaymentUpdated();
-      onClose();
+
+      setTimeout(() => {
+        setMessage({ text: "", type: "" });
+        onClose();
+      }, 2000);
     } catch (error) {
       console.error("Error al actualizar el pago:", error);
+      setMessage({ text: "Error al actualizar el pago.", type: "error" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,9 +90,14 @@ const EditPaymentModal = ({ open, onClose, selectedPayment, onPaymentUpdated }) 
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
           Editar Pago
         </Typography>
+        {message.text && (
+          <Alert severity={message.type} sx={{ mb: 2 }}>
+            {message.text}
+          </Alert>
+        )}
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Monto Pagado"
+            label="Monto"
             name="monto"
             type="number"
             value={formValues.monto}
@@ -91,8 +117,14 @@ const EditPaymentModal = ({ open, onClose, selectedPayment, onPaymentUpdated }) 
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Guardar Cambios
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={isLoading}
+          >
+            {isLoading ? <CircularProgress size={24} /> : "Guardar Cambios"}
           </Button>
         </form>
       </Box>

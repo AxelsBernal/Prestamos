@@ -6,7 +6,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "../css/pagos.css";
-import EditPaymentModal from "../components/modals/EditPaymentModal"; // Ensure the path is correct
+import EditPaymentModal from "../components/modals/EditPaymentModal";
 
 export default function Pagos() {
   const [pagos, setPagos] = useState([]);
@@ -18,12 +18,13 @@ export default function Pagos() {
   const fetchPagos = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_REST_API_PRESTAMOS}/pagos/All`
+        `${import.meta.env.VITE_REST_API_PRESTAMOS}/pagos/All`,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       const formattedData = response.data.map((pago) => ({
         ...pago,
-        formattedFecha: new Date(pago.fecha).toLocaleDateString("es-MX"), // For display in the table
-        fecha: pago.fecha.split("T")[0], // For use in the date picker
+        formattedFecha: new Date(pago.fecha).toLocaleDateString("es-MX"),
+        fecha: pago.fecha.split("T")[0],
       }));
       setPagos(formattedData);
     } catch (error) {
@@ -61,7 +62,8 @@ export default function Pagos() {
       const { prestamoId, folio } = selectedRow;
       try {
         await axios.delete(
-          `${import.meta.env.VITE_REST_API_PRESTAMOS}/${prestamoId}/pagos/${folio}`
+          `${import.meta.env.VITE_REST_API_PRESTAMOS}/${prestamoId}/pagos/${folio}`,
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
         fetchPagos();
         setIsDeleteDialogOpen(false);

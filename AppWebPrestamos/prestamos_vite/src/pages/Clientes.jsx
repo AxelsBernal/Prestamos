@@ -262,6 +262,7 @@ export default function Clientes() {
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddClient}
+        AddCliente={() => fetchClientes()}
       />
       <EditClientModal
         open={isEditModalOpen}
