@@ -84,3 +84,19 @@ export const getCurrentUser = async (req, res) => {
     }
 };
 
+// Cerrar sesión del usuario
+export const logoutUser = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        // Actualizar el campo lastLogout del usuario
+        await User.findByIdAndUpdate(userId, { lastLogout: new Date() });
+
+        res.status(200).json({ message: "Logout successful. Token invalidated." });
+    } catch (error) {
+        console.error("Error during logout:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+

@@ -4,14 +4,33 @@
 }
 
 .tabla-prestamos {
-  height: 400px;
   width: 100%;
+  max-width: 1200px;
   margin: 20px auto;
   background-color: #ffffff; /* Fondo blanco */
   border-radius: 8px; /* Bordes redondeados */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+  overflow-x: auto; /* Habilitar scroll horizontal */
 }
 
+.tabla-prestamos table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; /* Ancho mínimo para activar scroll */
+}
+
+.tabla-prestamos th {
+  background-color: #4caf50; /* Verde */
+  color: white;
+  font-weight: bold;
+  text-align: left;
+  padding: 10px;
+}
+
+.tabla-prestamos td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
 .green-header {
   background-color: #4caf50; /* Verde */
   color: white;
@@ -19,43 +38,14 @@
   text-align: center;
 }
 
-.MuiButton-containedSuccess {
-  background-color: #4caf50;
-  color: #fff;
-}
+/* Responsivo */
+@media (max-width: 768px) {
+  .tabla-prestamos {
+    margin: 10px;
+  }
 
-.MuiButton-containedSuccess:hover {
-  background-color: #45a049;
-}
-
-.MuiButton-outlinedError {
-  border: 1px solid #f44336; /* Rojo */
-  color: #f44336;
-}
-
-.MuiButton-outlinedError:hover {
-  background-color: rgba(244, 67, 54, 0.1);
-}
-
-.textField-search {
-  margin: 10px 0;
-  width: 50%;
-}
-
-.tabla-prestamos .MuiTableHead-root {
-  background-color: #4caf50;
-  color: white;
-}
-
-.tabla-prestamos .MuiTableRow-root {
-  cursor: pointer;
-}
-
-.tabla-prestamos .MuiTableCell-root {
-  padding: 8px 16px;
-  font-size: 14px;
-}
-
-.tabla-prestamos .MuiTableRow-root:hover {
-  background-color: #f5f5f5;
+  .tabla-prestamos th,
+  .tabla-prestamos td {
+    padding: 8px;
+  }
 }

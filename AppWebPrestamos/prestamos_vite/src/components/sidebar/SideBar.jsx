@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "@mui/material";
-
-// Importar íconos de React Icons con colores personalizados
-import { FaHome } from "react-icons/fa";
-import { MdPeopleAlt, MdOutlineRequestQuote } from "react-icons/md";
+import { FaHome, FaSignOutAlt } from "react-icons/fa";
+import { MdPeopleAlt, MdOutlineRequestQuote, MdAccountCircle } from "react-icons/md";
 import { RiBillLine } from "react-icons/ri";
-import { MdAccountCircle } from "react-icons/md";
-import { FaSignOutAlt } from "react-icons/fa";
-
+import axios from "axios";
 import "./Sidebar.css";
 
 export default function Sidebar() {
@@ -18,21 +14,8 @@ export default function Sidebar() {
     return storedState === "true";
   });
 
-  const [profileImage, setProfileImage] = useState(
-    "https://i.pinimg.com/736x/48/17/0f/48170f2365dda8b63acc5d5d36c7a9ff.jpg"
-  );
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageURL = URL.createObjectURL(file);
-      setProfileImage(imageURL);
-    }
-  };
-
-  const triggerFileInput = () => {
-    document.getElementById("profile-input").click();
-  };
+  const [userName, setUserName] = useState(""); // Estado para almacenar el nombre del usuario
+  const [showModal, setShowModal] = useState(false); // Estado para el modal de confirmación
 
   const toggleSidebar = () => {
     const newState = !isVisible;
@@ -43,12 +26,40 @@ export default function Sidebar() {
       : "with-sidebar";
   };
 
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${import.meta.env.VITE_REST_API_AUTH}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserName(response.data.nombre || "Usuario"); // Ajusta según el campo que devuelve la API
+    } catch (error) {
+      console.error("Error al obtener los datos del usuario:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchUserData();
     const content = document.getElementById("content");
     if (content) {
       content.className = isVisible ? "with-sidebar" : "no-sidebar";
     }
   }, [isVisible]);
+
+  const handleLogout = () => {
+    setShowModal(true); // Muestra el modal de confirmación
+  };
+
+  const confirmLogout = () => {
+    localStorage.removeItem("token"); // Elimina el token del almacenamiento local
+    window.location.href = "/login"; // Redirige al login con recarga de página
+  };
+
+  const cancelLogout = () => {
+    setShowModal(false); // Oculta el modal de confirmación
+  };
 
   const navigateTo = (path) => {
     navigate(path);
@@ -63,19 +74,7 @@ export default function Sidebar() {
       </Tooltip>
       <div className={`sidebar ${isVisible ? "visible" : "hidden"}`}>
         <div className="profile-container">
-          <img
-            src={profileImage}
-            alt="Perfil"
-            className="profile-icon"
-            onClick={triggerFileInput}
-          />
-          <input
-            id="profile-input"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            style={{ display: "none" }}
-          />
+          <h2 className="welcome-text">Bienvenido, {userName}</h2>
         </div>
         <ul>
           <Tooltip title="Inicio" placement="right">
@@ -130,7 +129,7 @@ export default function Sidebar() {
           </Tooltip>
           <Tooltip title="Salir" placement="right">
             <li>
-              <a onClick={() => navigateTo("/login")}>
+              <a onClick={handleLogout}>
                 Salir
                 <span style={{ marginLeft: "130px", color: "#F44336" }}>
                   <FaSignOutAlt />
@@ -140,6 +139,24 @@ export default function Sidebar() {
           </Tooltip>
         </ul>
       </div>
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Confirmar Cierre de Sesión</h3>
+            <p>¿Estás seguro de que deseas cerrar sesión?</p>
+            <div className="modal-actions">
+              <button className="confirm-button" onClick={confirmLogout}>
+                Sí, cerrar sesión
+              </button>
+              <button className="cancel-button" onClick={cancelLogout}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

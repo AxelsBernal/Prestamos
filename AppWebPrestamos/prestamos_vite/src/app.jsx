@@ -5,6 +5,7 @@ import Clientes from './pages/Clientes';
 import Prestamos from './pages/prestamos';
 import Pagos from './pages/pagos';
 import Login from './pages/Login';
+import Cuenta from './pages/Cuenta';
 import { useState } from 'react';
 import { useAuth } from './context/AuthContext';
 import { ToastContainer } from "react-toastify";
@@ -30,6 +31,7 @@ export default function App() {
                 <Route path="/clientes" element={<Clientes />} />
                 <Route path="/prestamos" element={<Prestamos />} />
                 <Route path="/pagos" element={<Pagos />} />
+                <Route path="/Cuenta" element={<Cuenta />} />
               </Routes>
             </div>
           </div>

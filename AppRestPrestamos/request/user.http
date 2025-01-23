@@ -19,11 +19,17 @@ Content-Type: application/json
 
 {
   "email": "AxsandovalBe@ittepic.edu.mx",
-  "password": "sABA020401HNENRXA3"
+  "password": "sABA020401HNENRXA3."
 }
 
 ###
 
 ### Obtener información del usuario actual
 GET {{api}}/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzY1OTQxOCwiZXhwIjoxNzM3NjYzMDE4fQ.sjmyXi3jGyWfkZ2ibyyZj6r5vAee0ZKoe0Bj7na4HWM
+###Cerrar sesion
+POST {{api}}/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzY1OTQxOCwiZXhwIjoxNzM3NjYzMDE4fQ.sjmyXi3jGyWfkZ2ibyyZj6r5vAee0ZKoe0Bj7na4HWM
+Content-Type: application/json
+
+

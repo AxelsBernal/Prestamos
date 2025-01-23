@@ -1,0 +1,90 @@
+/* Contenedor principal */
+.cuenta-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d90505, #2575fc);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-align: center;
+}
+
+/* Título */
+.cuenta-container h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #f7f7f7;
+}
+
+/* Formulario */
+.cuenta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Campos del formulario */
+.cuenta-field {
+  text-align: left;
+}
+
+.cuenta-field label {
+  display: block;
+  margin-bottom:5px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.cuenta-field input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #fff;
+  color: #333;
+  outline: none;
+}
+
+.cuenta-field input:read-only {
+  background: rgba(255, 255, 255, 0.8);
+  cursor: not-allowed;
+}
+
+/* Contraseña */
+.password-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-password {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background: #ff5e57;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+  background: #e04a44;
+}
+
+/* Animación del contenedor */
+.cuenta-container:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .cuenta-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+}

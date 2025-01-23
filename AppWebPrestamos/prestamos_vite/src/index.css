@@ -50,3 +50,14 @@ head {
   width: 100%;
   background-color: #fff;
 }
+
+/* Responsivo */
+@media (max-width: 768px) {
+  #app-container {
+    flex-direction: column;
+  }
+
+  #content {
+    margin-left: 0;
+  }
+}

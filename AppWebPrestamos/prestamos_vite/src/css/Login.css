@@ -18,7 +18,36 @@ body {
   /* Styling the login card */
   .login-card {
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 8px;.login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #9e9e9e;
+      padding: 10px;
+    }
+    
+    .login-card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .login-card {
+        width: 90%;
+      }
+    
+      .login-title {
+        font-size: 1.5em;
+      }
+    }
+    
     padding: 30px 20px;
     width: 400px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -108,3 +137,13 @@ body {
     margin-bottom: 10px;
   }
   
+  /* Responsivo */
+@media (max-width: 768px) {
+  .login-card {
+    width: 90%;
+  }
+
+  .login-title {
+    font-size: 1.5em;
+  }
+}
