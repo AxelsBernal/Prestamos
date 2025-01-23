@@ -26,11 +26,19 @@ const AddLoanModal = ({ open, onClose, onLoanAdded }) => {
   });
   const [message, setMessage] = useState({ text: "", type: "" });
 
+  // Obtener el token del almacenamiento local
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_REST_API_CLIENTES}`
+          `${import.meta.env.VITE_REST_API_CLIENTES}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setClients(response.data);
       } catch (error) {
@@ -39,21 +47,32 @@ const AddLoanModal = ({ open, onClose, onLoanAdded }) => {
     };
 
     fetchClients();
-  }, []);
+  }, [token]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormValues((prevValues) => {
       const updatedValues = { ...prevValues, [name]: value };
 
-      if (name === "montoPrestado" || name === "tasaInteres" || name === "totalPagos") {
+      if (
+        name === "montoPrestado" ||
+        name === "tasaInteres" ||
+        name === "totalPagos"
+      ) {
         const montoPrestado = parseFloat(updatedValues.montoPrestado || 0);
         const tasaInteres = parseFloat(updatedValues.tasaInteres || 0) / 100;
         const totalPagos = parseInt(updatedValues.totalPagos || 0, 10);
 
-        if (updatedValues.tipo === "semanal" && montoPrestado && tasaInteres && totalPagos) {
+        if (
+          updatedValues.tipo === "semanal" &&
+          montoPrestado &&
+          tasaInteres &&
+          totalPagos
+        ) {
           const montoInteres = montoPrestado * tasaInteres;
-          updatedValues.saldoRestante = (montoInteres * totalPagos).toFixed(2);
+          updatedValues.saldoRestante = (
+            montoInteres * totalPagos
+          ).toFixed(2);
         }
       }
 
@@ -77,7 +96,11 @@ const AddLoanModal = ({ open, onClose, onLoanAdded }) => {
         }),
       };
 
-      await axios.post(`${import.meta.env.VITE_REST_API_PRESTAMOS}`, payload);
+      await axios.post(`${import.meta.env.VITE_REST_API_PRESTAMOS}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setMessage({ text: "Préstamo agregado correctamente", type: "success" });
       setFormValues({
         clienteId: "",
@@ -95,7 +118,10 @@ const AddLoanModal = ({ open, onClose, onLoanAdded }) => {
       }, 2000);
     } catch (error) {
       console.error("Error al agregar préstamo:", error);
-      setMessage({ text: "Error desconocido al agregar préstamo", type: "error" });
+      setMessage({
+        text: "Error desconocido al agregar préstamo",
+        type: "error",
+      });
     }
   };
 

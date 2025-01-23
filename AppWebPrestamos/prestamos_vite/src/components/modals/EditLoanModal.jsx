@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Box, Typography, TextField, Button, MenuItem } from "@mui/material";
+import { Modal, Box, Typography, TextField, Button, MenuItem, CircularProgress } from "@mui/material";
 import axios from "axios";
 
-const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
+const EditLoanModal = ({ open, onClose, selectedLoanId, onLoanEdited }) => {
   const [formValues, setFormValues] = useState({
     id: "",
     clienteId: "",
@@ -15,40 +15,50 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
     totalPagos: "",
     pagosRealizados: "",
     fechaInicio: "",
-    status: "", // Add status field
+    status: "",
   });
+  const [loading, setLoading] = useState(false); // Estado para controlar la carga
 
   useEffect(() => {
-    if (selectedLoan && open) {
+    if (selectedLoanId && open) {
       const fetchLoanDetails = async () => {
+        setLoading(true); // Inicia el indicador de carga
         try {
+          const token = localStorage.getItem("token");
           const response = await axios.get(
-            `${import.meta.env.VITE_REST_API_PRESTAMOS}/${selectedLoan.id}`
+            `${import.meta.env.VITE_REST_API_PRESTAMOS}/${selectedLoanId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
           const loanData = response.data;
 
           setFormValues({
-            id: loanData.id,
-            clienteId: loanData.clienteId,
-            tipo: loanData.tipo,
-            montoPrestado: loanData.montoPrestado,
-            tasaInteres: loanData.tasaInteres * 100, // Convert to percentage
-            montoInteres: loanData.montoInteres,
-            montoTotal: loanData.montoTotal,
-            saldoRestante: loanData.saldoRestante,
+            id: loanData.id || "",
+            clienteId: loanData.clienteId || "",
+            tipo: loanData.tipo || "",
+            montoPrestado: loanData.montoPrestado || "",
+            tasaInteres: loanData.tasaInteres * 100 || "",
+            montoInteres: loanData.montoInteres || "",
+            montoTotal: loanData.montoTotal || "",
+            saldoRestante: loanData.saldoRestante || "",
             totalPagos: loanData.totalPagos || "",
-            pagosRealizados: loanData.pagosRealizados,
-            fechaInicio: loanData.fechaInicio.split("T")[0], // Format date
-            status: loanData.status, // Set the current status
+            pagosRealizados: loanData.pagosRealizados || "",
+            fechaInicio: loanData.fechaInicio.split("T")[0] || "",
+            status: loanData.status || "",
           });
         } catch (error) {
-          console.error("Error al obtener los detalles del préstamo:", error);
+          console.error("Error fetching loan details:", error);
+        } finally {
+          setLoading(false); // Finaliza el indicador de carga
         }
       };
 
       fetchLoanDetails();
     }
-  }, [selectedLoan, open]);
+  }, [selectedLoanId, open]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -62,180 +72,182 @@ const EditLoanModal = ({ open, onClose, selectedLoan, onLoanEdited }) => {
     event.preventDefault();
 
     try {
-      const payload = {
-        tipo: formValues.tipo,
-        montoPrestado: formValues.montoPrestado,
-        tasaInteres: formValues.tasaInteres / 100, // Convert to decimal
-        montoInteres: formValues.montoInteres,
-        montoTotal: formValues.montoTotal,
-        saldoRestante: formValues.saldoRestante,
-        ...(formValues.tipo === "semanal" && {
-          totalPagos: formValues.totalPagos,
-        }),
-        pagosRealizados: formValues.pagosRealizados,
-        fechaInicio: formValues.fechaInicio,
-        status: formValues.status, // Include status in payload
-      };
-
+      const token = localStorage.getItem("token");
       await axios.put(
         `${import.meta.env.VITE_REST_API_PRESTAMOS}/${formValues.id}`,
-        payload
+        {
+          ...formValues,
+          tasaInteres: formValues.tasaInteres / 100,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       onLoanEdited && onLoanEdited();
-      onClose(); // Close the modal immediately after saving
+      onClose();
     } catch (error) {
-      console.error("Error al actualizar el préstamo:", error);
+      console.error("Error updating loan:", error);
     }
   };
 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="edit-loan-modal">
+    <Modal open={open} onClose={onClose}>
       <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 500,
+          width: 400,
+          maxHeight: "90vh",
+          overflowY: "auto",
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: 24,
-          p: 4,
+          p: 3,
         }}
       >
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
           Editar Préstamo
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="ID Préstamo"
-            name="id"
-            value={formValues.id}
-            InputProps={{
-              readOnly: true,
-            }}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="ID Cliente"
-            name="clienteId"
-            value={formValues.clienteId}
-            InputProps={{
-              readOnly: true,
-            }}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Tipo"
-            name="tipo"
-            value={formValues.tipo}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Monto Prestado"
-            name="montoPrestado"
-            type="number"
-            value={formValues.montoPrestado}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Tasa de Interés (%)"
-            name="tasaInteres"
-            type="number"
-            value={formValues.tasaInteres}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Monto Interés"
-            name="montoInteres"
-            type="number"
-            value={formValues.montoInteres}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Monto Total"
-            name="montoTotal"
-            type="number"
-            value={formValues.montoTotal}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Saldo Restante"
-            name="saldoRestante"
-            type="number"
-            value={formValues.saldoRestante}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          {formValues.tipo === "semanal" && (
+        {loading ? ( // Mostrar CircularProgress mientras se cargan los datos
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <form onSubmit={handleSubmit}>
             <TextField
-              label="Total de Pagos"
-              name="totalPagos"
-              type="number"
-              value={formValues.totalPagos}
+              label="Loan ID"
+              name="id"
+              value={formValues.id}
+              InputProps={{
+                readOnly: true,
+              }}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Client ID"
+              name="clienteId"
+              value={formValues.clienteId}
+              InputProps={{
+                readOnly: true,
+              }}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Type"
+              name="tipo"
+              value={formValues.tipo}
               onChange={handleInputChange}
               fullWidth
               required
               sx={{ mb: 2 }}
             />
-          )}
-          <TextField
-            label="Pagos Realizados"
-            name="pagosRealizados"
-            type="number"
-            value={formValues.pagosRealizados}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Fecha de Inicio"
-            name="fechaInicio"
-            type="date"
-            value={formValues.fechaInicio}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Estado"
-            name="status"
-            select
-            value={formValues.status}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mb: 2 }}
-          >
-            <MenuItem value="activo">Activo</MenuItem>
-            <MenuItem value="liquidado">Liquidado</MenuItem>
-          </TextField>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Actualizar Préstamo
-          </Button>
-        </form>
+            <TextField
+              label="Monto Prestado"
+              name="montoPrestado"
+              type="number"
+              value={formValues.montoPrestado}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Tasa de Interés (%)"
+              name="tasaInteres"
+              type="number"
+              value={formValues.tasaInteres}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Monto Interés"
+              name="montoInteres"
+              type="number"
+              value={formValues.montoInteres}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Monto Total"
+              name="montoTotal"
+              type="number"
+              value={formValues.montoTotal}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Saldo Restante"
+              name="saldoRestante"
+              type="number"
+              value={formValues.saldoRestante}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            {formValues.tipo === "semanal" && (
+              <TextField
+                label="Total de Pagos"
+                name="totalPagos"
+                type="number"
+                value={formValues.totalPagos}
+                onChange={handleInputChange}
+                fullWidth
+                required
+                sx={{ mb: 2 }}
+              />
+            )}
+            <TextField
+              label="Pagos Realizados"
+              name="pagosRealizados"
+              type="number"
+              value={formValues.pagosRealizados}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Fecha de Inicio"
+              name="fechaInicio"
+              type="date"
+              value={formValues.fechaInicio}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Estado"
+              name="status"
+              select
+              value={formValues.status}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            >
+              <MenuItem value="activo">Activo</MenuItem>
+              <MenuItem value="liquidado">Liquidado</MenuItem>
+            </TextField>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Actualizar Préstamo
+            </Button>
+          </form>
+        )}
       </Box>
     </Modal>
   );

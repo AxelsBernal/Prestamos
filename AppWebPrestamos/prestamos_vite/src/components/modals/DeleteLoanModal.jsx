@@ -1,94 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Modal,
-  Box,
-  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
-  Alert,
+  CircularProgress,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 
-const DeleteLoanModal = ({ open, onClose, selectedLoan, onLoanDeleted }) => {
-  const [message, setMessage] = useState({ text: "", type: "" });
+export default function DeleteLoanModal({ open, onClose, selectedLoanId, onLoanDeleted }) {
+  const [loading, setLoading] = useState(false);
+  const [loanDetails, setLoanDetails] = useState(null);
 
+  // Obtener detalles del préstamo
+  useEffect(() => {
+    const fetchLoanDetails = async () => {
+      if (!selectedLoanId) return;
+
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_REST_API_PRESTAMOS}/${selectedLoanId}`,
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          }
+        );
+        setLoanDetails(response.data);
+      } catch (error) {
+        console.error("Error al obtener los detalles del préstamo:", error);
+        setLoanDetails(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (open) {
+      fetchLoanDetails();
+    }
+  }, [selectedLoanId, open]);
+
+  // Función para eliminar préstamo
   const handleDelete = async () => {
+    if (!selectedLoanId) return;
+
+    setLoading(true);
     try {
-      const { id } = selectedLoan;
-      await axios.delete(`${import.meta.env.VITE_REST_API_PRESTAMOS}/${id}`);
-      setMessage({ text: "Préstamo eliminado correctamente", type: "success" });
-      onLoanDeleted && onLoanDeleted(); // Refresh the loan list
-      setTimeout(() => {
-        setMessage({ text: "", type: "" });
-        onClose(); // Close the modal
-      }, 5000);
+      await axios.delete(
+        `${import.meta.env.VITE_REST_API_PRESTAMOS}/${selectedLoanId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      onLoanDeleted(); // Refresca los datos después de eliminar
+      onClose();
     } catch (error) {
-      console.error("Error al eliminar préstamo:", error);
-      setMessage({ text: "Error al eliminar el préstamo", type: "error" });
+      console.error("Error al eliminar el préstamo:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!selectedLoan) {
-    return null;
-  }
-
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="delete-loan-modal">
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          Eliminar Préstamo
-        </Typography>
-        {message.text && (
-          <Alert severity={message.type} sx={{ mb: 2 }}>
-            {message.text}
-          </Alert>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Eliminar Préstamo</DialogTitle>
+      <DialogContent>
+        {loading ? (
+          <CircularProgress />
+        ) : loanDetails ? (
+          <Typography>
+            ¿Estás seguro de que deseas eliminar el préstamo con el id de {" "}
+            <strong>{loanDetails.id}</strong> con un monto de{" "}
+            <strong>{loanDetails.montoPrestado}</strong>?
+          </Typography>
+        ) : (
+          <Typography>No se pudieron cargar los detalles del préstamo.</Typography>
         )}
-        <Typography sx={{ mb: 2 }}>
-          ¿Estás seguro de que deseas eliminar el préstamo con los siguientes
-          detalles?
-        </Typography>
-        <Typography>
-          <strong>ID Préstamo:</strong> {selectedLoan.id}
-        </Typography>
-        <Typography>
-          <strong>Cliente:</strong> {selectedLoan.nombreCliente}
-        </Typography>
-        <Typography>
-          <strong>Monto Total:</strong> {selectedLoan.montoTotal}
-        </Typography>
-        <Typography sx={{ mb: 2 }}>
-          <strong>Fecha de Inicio:</strong> {selectedLoan.fechaInicio}
-        </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleDelete}
-          >
-            Eliminar
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={onClose}
-          >
-            Cancelar
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Cancelar
+        </Button>
+        <Button
+          onClick={handleDelete}
+          color="error"
+          disabled={loading || !loanDetails}
+        >
+          Eliminar
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
-};
-
-export default DeleteLoanModal;
+}
