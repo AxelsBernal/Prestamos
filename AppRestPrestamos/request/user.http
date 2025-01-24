@@ -1,4 +1,4 @@
-@api = http://localhost:3020/api/v1/users
+@api = https://prestamos-h874.onrender.com/api/v1
 
 ### Registrar un nuevo usuario
 POST {{api}}/register
@@ -14,7 +14,7 @@ Content-Type: application/json
 ###
 
 ### Iniciar sesión con el usuario registrado
-POST {{api}}/login
+POST {{api}}/users/login
 Content-Type: application/json
 
 {

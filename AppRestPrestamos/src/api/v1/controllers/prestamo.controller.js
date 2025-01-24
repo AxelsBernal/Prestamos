@@ -566,5 +566,35 @@ export const getAllPagos = async (req, res) => {
   }
 };
 
+export const getMontoTotalPorMes = async (req, res) => {
+  try {
+    const { mes, anio } = req.query; // Recibe mes (1-12) y año como parámetros
+    const { userId } = req.user; // ID del usuario autenticado
+
+    // Validar que mes y año sean válidos
+    if (!mes || !anio || isNaN(mes) || isNaN(anio)) {
+      return res.status(400).json({ message: "Mes y año son requeridos y deben ser números válidos" });
+    }
+
+    // Crear rango de fechas para el mes solicitado
+    const fechaInicio = new Date(anio, mes - 1, 1); // Primer día del mes
+    const fechaFin = new Date(anio, mes, 0, 23, 59, 59); // Último día del mes
+
+    // Obtener préstamos asociados al usuario
+    const prestamos = await prestamoService.listAllByUserId(userId);
+
+    // Filtrar pagos dentro del rango de fechas y sumar montos
+    const montoTotal = prestamos.flatMap((prestamo) =>
+      prestamo.pagos.filter((pago) => pago.fecha >= fechaInicio && pago.fecha <= fechaFin)
+    ).reduce((total, pago) => total + pago.monto, 0);
+
+    res.status(200).json({ montoTotal });
+  } catch (error) {
+    console.error("Error en getMontoTotalPorMes:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
 
 
