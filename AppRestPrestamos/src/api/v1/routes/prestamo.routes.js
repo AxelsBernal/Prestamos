@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import * as prestamoController from '../controllers/prestamo.controller';
-import { authMiddleware } from "../middlewares/auth.middleware.js"; // Importar el middleware
+import * as prestamoController from '../controllers/prestamo.controller.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 const router = Router();
-/************************************ PRESTAMOS ***************************************************** */
+
 router.get('/', authMiddleware, prestamoController.getAllPrestamos);  //Obtener todos los prestamis
 router.get('/:id', authMiddleware, prestamoController.getPrestamoById);  //Obtener prestamo por id
 router.post('/', authMiddleware, prestamoController.createPrestamo); //agregar un prestamo 
@@ -23,5 +23,6 @@ router.get('/resumen/prestamos', authMiddleware, prestamoController.obtenerResum
 router.get('/pagos/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorPrestamo);  // Obtener pagos de un prestamo especifico 
 router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorClienteYPrestamo); // Obtener pagos de un prestamo y cliente 
 router.get('/pagos/All', authMiddleware, prestamoController.getAllPagos);
+
 
 export default router;

@@ -1,44 +1,32 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-//FIC: imports Swagger
-//FIC: imports Routes
-//FIC: imports Middlewares
-//FIC: Config para variables de entorno
-import config from './config/config'
-//FIC: Declaramos la constante app igualandola a express
+import config from './config/config.js';
+import routeAPI from './api/v1/routes/index.js';
+
 const app = express();
 
-//FIC: Establece la conexion a la BD
-import { mongoose } from './config/database.config';
-//FIC: Settings
-app.set('port', config.PORT);
-//FIC: Middlewares generales
-app.use(cors());
+// Configuración global de CORS
+app.use(cors({
+    origin: 'https://prestamos-0104.web.app', // Frontend en Firebase Hosting
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middlewares generales
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//FIC: Routes
-// Import Routes
-import routeAPI from './api/v1/routes/index';
 
+// Rutas principales
 const api = config.API_URL;
-app.get(`${api}`, (req,res)=>{
+app.get(`${api}`, (req, res) => {
     res.send(
-        `<h1>RESTful running in root</h1> <p> Shipping: <b>${api}/api-docs</b> for more information.</p>`
+        `<h1>RESTful running in root</h1> <p>API documentation: <b>${api}/api-docs</b></p>`
     );
-})
-app.get('/DrFIC', (req,res)=>{
-    res.send(
-        `<h1>RESTful running in DrFIC</h1> <p> Shipping: <b>${api}/api-docs</b> for more information.</p>`
-    );
-})
-// Routes
-// Swagger Docs
-// Middleware para el manejo de errores
-// Routes
+});
 
+// Monta las rutas desde el archivo principal
 routeAPI(app);
 
-// Export App
 export default app;
