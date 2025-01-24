@@ -24,7 +24,7 @@ router.get('/pagos/prestamo/:prestamoId', authMiddleware, prestamoController.get
 router.get('/pagos/cliente/:clienteId/prestamo/:prestamoId', authMiddleware, prestamoController.getPagosPorClienteYPrestamo); // Obtener pagos de un prestamo y cliente 
 router.get('/pagos/All', authMiddleware, prestamoController.getAllPagos);
 
-router.get('/pagos/monto-total/mes/:mes/anio/:anio', authMiddleware, prestamoController.getMontoTotalPorMes);
+router.get('/mes/:mes/anio/:anio', authMiddleware, prestamoController.getMontoTotalPorMes);
 
 
 
