@@ -568,7 +568,7 @@ export const getAllPagos = async (req, res) => {
 
 export const getMontoTotalPorMes = async (req, res) => {
   try {
-    const { mes, anio } = req.query; // Recibe mes (1-12) y año como parámetros
+    const { mes, anio } = req.params; // Recibe mes y año desde los parámetros de la URL
     const { userId } = req.user; // ID del usuario autenticado
 
     // Validar que mes y año sean válidos
@@ -594,6 +594,7 @@ export const getMontoTotalPorMes = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 
 
 

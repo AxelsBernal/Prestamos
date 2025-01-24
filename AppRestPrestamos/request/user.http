@@ -1,4 +1,4 @@
-@api = https://prestamos-h874.onrender.com/api/v1
+@api = https://prestamos-h874.onrender.com/api/v1/users
 
 ### Registrar un nuevo usuario
 POST {{api}}/register
@@ -23,10 +23,15 @@ Content-Type: application/json
 }
 
 ###
+#Ver ganancia por mes
+GET {{api}}/users/prestamos/pagos/monto-total?mes=1&anio=2025
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzc1NDMyNiwiZXhwIjoxNzM3NzU3OTI2fQ.cRMolUxIPt8-HUmaX2PnzUe_7VGlQLM9laD-cpqq130
+Content-Type: application/json
+
+
 
 ### Obtener información del usuario actual
-GET {{api}}/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzY1OTQxOCwiZXhwIjoxNzM3NjYzMDE4fQ.sjmyXi3jGyWfkZ2ibyyZj6r5vAee0ZKoe0Bj7na4HWM
+GET {{api}}/users/me
 ###Cerrar sesion
 POST {{api}}/logout
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzY1OTQxOCwiZXhwIjoxNzM3NjYzMDE4fQ.sjmyXi3jGyWfkZ2ibyyZj6r5vAee0ZKoe0Bj7na4HWM
