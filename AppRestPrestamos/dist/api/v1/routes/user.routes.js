@@ -10,15 +10,9 @@ var _UserController = require("../controllers/User.controller.js");
 var _authMiddleware = require("../middlewares/auth.middleware.js");
 var router = _express["default"].Router();
 
-// Ruta para registrar usuario
-router.post("/register", _UserController.registerUser);
-
-// Ruta para iniciar sesión
-router.post("/login", _UserController.loginUser);
-
-// Ruta para obtener información del usuario actual
-router.get("/me", _authMiddleware.authMiddleware, _UserController.getCurrentUser);
-
-// Ruta para cerrar sesión
-router.post("/logout", _authMiddleware.authMiddleware, _UserController.logoutUser);
+// Rutas de usuarios
+router.post('/register', _UserController.registerUser);
+router.post('/login', _UserController.loginUser);
+router.get('/me', _authMiddleware.authMiddleware, _UserController.getCurrentUser);
+router.post('/logout', _authMiddleware.authMiddleware, _UserController.logoutUser);
 var _default = exports["default"] = router;

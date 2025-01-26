@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ###
 # Ver ganancia por mes
-GET {{api}}/prestamos/pagos/monto-total/mes/1/anio/2025
+GET {{api}}/pagos/monto-total/mes/1/anio/2025
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzc1NDMyNiwiZXhwIjoxNzM3NzU3OTI2fQ.cRMolUxIPt8-HUmaX2PnzUe_7VGlQLM9laD-cpqq130
 Content-Type: application/json
 ### Obtener información del usuario actual

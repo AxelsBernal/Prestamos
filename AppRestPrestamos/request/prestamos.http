@@ -1,8 +1,33 @@
-@api = https://prestamos-h874.onrender.com/api/v1/prestamo
+@api = https://prestamos-h874.onrender.com/api/v1/prestamos
 
 # Obtener todos los préstamos
-GET {{api}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc
+GET {{api}}/mes/1/anio/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzc1NDMyNiwiZXhwIjoxNzM3NzU3OTI2fQ.cRMolUxIPt8-HUmaX2PnzUe_7VGlQLM9laD-cpqq130
+Content-Type: application/json
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###
 GET {{api}}/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzhlYzAyODc4ZDkxNGZiYTFiMzAxMzkiLCJlbWFpbCI6IkF4c2FuZG92YWxCZUBpdHRlcGljLmVkdS5teCIsImlhdCI6MTczNzQ5MjUwMiwiZXhwIjoxNzM3NDk2MTAyfQ.b--fjfUqzJBKLUWDxht40PFCLj78jkXhEPgn-kWoqIc###

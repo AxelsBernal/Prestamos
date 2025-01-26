@@ -4,7 +4,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePrestamo = exports.obtenerResumenPrestamos = exports.getPrestamoById = exports.getPagosPorPrestamo = exports.getPagosPorClienteYPrestamo = exports.getPagosPorCliente = exports.getLoanSummaryByClienteId = exports.getAllPrestamos = exports.getAllPagos = exports.editPago = exports.deletePrestamo = exports.deletePago = exports.createPrestamo = exports.addPago = void 0;
+exports.updatePrestamo = exports.obtenerResumenPrestamos = exports.getPrestamoById = exports.getPagosPorPrestamo = exports.getPagosPorClienteYPrestamo = exports.getPagosPorCliente = exports.getMontoTotalPorMes = exports.getLoanSummaryByClienteId = exports.getAllPrestamos = exports.getAllPagos = exports.editPago = exports.deletePrestamo = exports.deletePago = exports.createPrestamo = exports.addPago = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -936,5 +936,61 @@ var getAllPagos = exports.getAllPagos = /*#__PURE__*/function () {
   }));
   return function getAllPagos(_x28, _x29) {
     return _ref15.apply(this, arguments);
+  };
+}();
+var getMontoTotalPorMes = exports.getMontoTotalPorMes = /*#__PURE__*/function () {
+  var _ref17 = (0, _asyncToGenerator2["default"])(/*#__PURE__*/_regenerator["default"].mark(function _callee17(req, res) {
+    var _req$params3, mes, anio, userId, fechaInicio, fechaFin, prestamos, montoTotal;
+    return _regenerator["default"].wrap(function _callee17$(_context17) {
+      while (1) switch (_context17.prev = _context17.next) {
+        case 0:
+          _context17.prev = 0;
+          _req$params3 = req.params, mes = _req$params3.mes, anio = _req$params3.anio; // Recibe mes y año desde los parámetros de la URL
+          userId = req.user.userId; // ID del usuario autenticado
+          // Validar que mes y año sean válidos
+          if (!(!mes || !anio || isNaN(mes) || isNaN(anio))) {
+            _context17.next = 5;
+            break;
+          }
+          return _context17.abrupt("return", res.status(400).json({
+            message: "Mes y año son requeridos y deben ser números válidos"
+          }));
+        case 5:
+          // Crear rango de fechas para el mes solicitado
+          fechaInicio = new Date(anio, mes - 1, 1); // Primer día del mes
+          fechaFin = new Date(anio, mes, 0, 23, 59, 59); // Último día del mes
+          // Obtener préstamos asociados al usuario
+          _context17.next = 9;
+          return _prestamo["default"].listAllByUserId(userId);
+        case 9:
+          prestamos = _context17.sent;
+          // Filtrar pagos dentro del rango de fechas y sumar montos
+          montoTotal = prestamos.flatMap(function (prestamo) {
+            return prestamo.pagos.filter(function (pago) {
+              return pago.fecha >= fechaInicio && pago.fecha <= fechaFin;
+            });
+          }).reduce(function (total, pago) {
+            return total + pago.monto;
+          }, 0);
+          res.status(200).json({
+            montoTotal: montoTotal
+          });
+          _context17.next = 18;
+          break;
+        case 14:
+          _context17.prev = 14;
+          _context17.t0 = _context17["catch"](0);
+          console.error("Error en getMontoTotalPorMes:", _context17.t0);
+          res.status(500).json({
+            message: "Error interno del servidor"
+          });
+        case 18:
+        case "end":
+          return _context17.stop();
+      }
+    }, _callee17, null, [[0, 14]]);
+  }));
+  return function getMontoTotalPorMes(_x31, _x32) {
+    return _ref17.apply(this, arguments);
   };
 }();
