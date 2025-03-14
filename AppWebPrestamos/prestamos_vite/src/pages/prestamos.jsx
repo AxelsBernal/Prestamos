@@ -39,6 +39,7 @@ export default function Prestamos() {
     { field: "montoTotal", headerName: "Monto Total", flex: 1,width: 70, headerClassName: "green-header" },
     { field: "pagosRealizados", headerName: "Pagos realizados",width: 70, flex: 1, headerClassName: "green-header" },
     { field: "saldoRestante", headerName: "Saldo Restante", flex: 1, headerClassName: "green-header" },
+    { field: "status", headerName: "Estatus",width: 70, flex: 1, headerClassName: "green-header" },
     { field: "fechaInicio", headerName: "Fecha de Inicio", flex: 1, headerClassName: "green-header" },
     {
       field: "acciones",
