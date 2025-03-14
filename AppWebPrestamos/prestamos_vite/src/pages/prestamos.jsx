@@ -13,6 +13,8 @@ import AddLoanModal from "../components/modals/AddLoanModal";
 import DeleteLoanModal from "../components/modals/DeleteLoanModal";
 import EditLoanModal from "../components/modals/EditLoanModal";
 import AddPaymentModal from "../components/modals/AddPaymentModal";
+import { Checkbox, FormControlLabel } from "@mui/material";
+
 
 export default function Prestamos() {
   const [prestamos, setPrestamos] = useState([]);
@@ -25,6 +27,13 @@ export default function Prestamos() {
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
   const [currentLoanId, setCurrentLoanId] = useState(null);
   const [selectedLoanId, setSelectedLoanId] = useState(null);
+  const [hideLiquidado, setHideLiquidado] = useState(false);
+
+  const filteredPrestamos = hideLiquidado
+  ? prestamos.filter((p) => p.status !== "liquidado")
+  : prestamos;
+
+
 
 
   // Función para obtener el token
@@ -186,22 +195,33 @@ export default function Prestamos() {
   return (
     <div className="prestamos-container">
       <Box sx={{ marginBottom: 2 }}>
-        <Stack direction="row" spacing={2}>
-          <Tooltip title="Agregar Préstamo">
-            <IconButton onClick={() => setIsModalOpen(true)} color="primary">
-              <AddCircleIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Refrescar">
-            <IconButton onClick={fetchPrestamos} color="primary">
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
+      <Stack direction="row" spacing={2} alignItems="center">
+    <Tooltip title="Agregar Préstamo">
+      <IconButton onClick={() => setIsModalOpen(true)} color="primary">
+        <AddCircleIcon />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title="Refrescar">
+      <IconButton onClick={fetchPrestamos} color="primary">
+        <RefreshIcon />
+      </IconButton>
+    </Tooltip>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={hideLiquidado}
+          onChange={(e) => setHideLiquidado(e.target.checked)}
+          color="primary"
+        />
+      }
+      label="Ocultar liquidados"
+    />
+  </Stack>
       </Box>
       {!showPagos ? (
         <DataGrid
-    rows={prestamos}
+    rows={filteredPrestamos} // Usamos la lista filtrada
+    //rows={prestamos}
     columns={columns}
     autoHeight
     pageSize={5}
