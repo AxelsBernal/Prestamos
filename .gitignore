@@ -2,3 +2,4 @@
 .codegpt
 .env
 AppRestPrestamos/node_modules/.cache/@babel/register/.babel.7.26.0.development.json
+*.cache

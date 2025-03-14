@@ -201,13 +201,16 @@ export default function Prestamos() {
       </Box>
       {!showPagos ? (
         <DataGrid
-          rows={prestamos}
-          columns={columns}
-          autoHeight
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          onRowClick={(params) => setSelectedRow(params.row)}
-        />
+    rows={prestamos}
+    columns={columns}
+    autoHeight
+    pageSize={5}
+    rowsPerPageOptions={[5]}
+    onRowClick={(params) => setSelectedRow(params.row)}
+    getRowClassName={(params) =>
+      params.row.status === "liquidado" ? "row-liquidado" : ""
+    }
+/>
       ) : (
         <DataGrid
           rows={pagos}

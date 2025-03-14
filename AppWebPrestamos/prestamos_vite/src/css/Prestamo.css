@@ -49,3 +49,8 @@
     padding: 8px;
   }
 }
+
+.row-liquidado {
+  background-color: rgba(255, 0, 0, 0.2) !important; /* Rojo claro */
+}
+
